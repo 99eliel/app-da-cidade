@@ -23,38 +23,37 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Header Estilo iFood */
+        /* Header */
         .header-app { padding: 50px 20px 20px 20px; background-color: white; position: sticky; top: 0; z-index: 100; }
         .search-container { background-color: #F4F4F4; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
         .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.95rem; }
         .section-title { font-size: 1.2rem; font-weight: 700; margin: 25px 20px 15px 20px; }
 
-        /* Banner Global (Aparece em Início e Categorias) */
-        .banner-container {
-            margin: 0 20px 20px 20px;
-            border-radius: 16px;
-            height: 145px;
-            background-color: #f8f9fa;
-            display: none; /* Ativado via JS */
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
-        }
+        /* Banner Global */
+        .banner-container { margin: 0 20px 20px 20px; border-radius: 16px; height: 145px; background-color: #f8f9fa; display: none; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
         .banner-container img { width: 100%; height: 100%; object-fit: cover; animation: fadeIn 0.5s; }
 
-        /* Grid Categorias 2x2 Full Image */
-        .grid-categorias { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; }
-        .categoria-card { border-radius: 14px; height: 115px; position: relative; overflow: hidden; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.08); background-color: #E7F1FF; transition: transform 0.1s; }
+        /* Grid Categorias Fixas */
+        .grid-categorias { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 25px; }
+        .categoria-card { border-radius: 14px; height: 110px; position: relative; overflow: hidden; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: transform 0.1s; }
         .categoria-card:active { transform: scale(0.96); }
         .categoria-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
         .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); z-index: 2; }
         .card-text { position: relative; z-index: 3; color: white; font-weight: 800; font-size: 1.05rem; text-shadow: 1px 1px 4px rgba(0,0,0,0.7); text-align: center; }
 
-        /* Aba Serviços (Mural) */
-        .btn-postar-float { display: block; width: calc(100% - 40px); margin: 10px auto 20px auto; background-color: var(--blue-primary); color: white; padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25); }
-        .pedido-item { border-bottom: 1px solid var(--border-color); padding: 20px; display: flex; justify-content: space-between; align-items: center; }
-        .pedido-info h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; }
-        .pedido-info p { font-size: 0.8rem; color: var(--text-muted); }
+        /* Listas (Pedidos e Empresas Dinâmicas) */
+        .lista-container { padding: 0 20px; }
+        .lista-item { border-bottom: 1px solid var(--border-color); padding: 18px 0; display: flex; justify-content: space-between; align-items: center; }
+        
+        .item-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px; flex-shrink: 0;}
+        .item-info { flex-grow: 1; }
+        .item-info h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
+        .item-info p { font-size: 0.8rem; color: var(--text-muted); }
+        
         .status-tag { color: #1B7A43; font-weight: 700; font-size: 0.8rem; background: #E8F5E9; padding: 4px 8px; border-radius: 6px; }
+        .btn-call { width: 40px; height: 40px; border-radius: 50%; background-color: white; border: 1px solid var(--border-color); color: var(--blue-primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+
+        .btn-postar-float { display: block; width: calc(100% - 40px); margin: 10px auto 20px auto; background-color: var(--blue-primary); color: white; padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25); }
 
         /* Modais */
         .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; opacity: 0; transition: opacity 0.3s; }
@@ -65,10 +64,9 @@
         .btn-close { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
-        .form-group input { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; background: #fafafa; }
+        .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; background: #fafafa; }
         .btn-submit { width: 100%; padding: 16px; border: none; border-radius: 10px; background-color: var(--blue-primary); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
 
-        /* Upload Estilizado */
         .file-box { border: 2px dashed var(--blue-primary); border-radius: 12px; padding: 20px; text-align: center; background: #f0f7ff; color: var(--blue-primary); font-weight: 600; cursor: pointer; position: relative; margin-bottom: 15px; }
         .file-box input { opacity: 0; position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer; }
 
@@ -103,7 +101,7 @@
         <button class="btn-postar-float" onclick="abrirModal('modal-pedido')">+ POSTAR PEDIDO</button>
         <h2 class="section-title" style="margin-top: 5px;">Pedidos Recentes</h2>
         
-        <div id="lista-pedidos-dinamica">
+        <div class="lista-container" id="lista-pedidos-dinamica">
             <div class="loading-text">Conectando...</div>
         </div>
     </div>
@@ -112,25 +110,40 @@
         <div class="header-app">
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar loja ou categoria...">
+                <input type="text" placeholder="Buscar loja ou serviço...">
             </div>
         </div>
 
         <div class="banner-container banner-placeholder"></div>
 
-        <h2 class="section-title" style="margin-top: 5px;">Categorias</h2>
+        <h2 class="section-title" style="margin-top: 5px;">Explorar Categorias</h2>
         
-        <div class="grid-categorias" id="grid-empresas-dinamico">
-            <a href="#" class="categoria-card">
+        <div class="grid-categorias">
+            <a href="#" class="categoria-card" style="background-color: #E7F1FF;">
                 <img src="https://i.imgur.com/beMaVEG.png">
                 <div class="overlay"></div>
                 <span class="card-text">Mercado</span>
             </a>
-            <a href="#" class="categoria-card">
-                <img src="https://via.placeholder.com/400x200/FF6B6B/FFFFFF?text=Farmácia">
+            <a href="#" class="categoria-card" style="background-color: #FFF0F0;">
+                <i class="fa-solid fa-pills" style="position:absolute; font-size:4rem; color:#DC3545; opacity:0.15; bottom:-5px; right:-5px; transform: rotate(-10deg);"></i>
                 <div class="overlay"></div>
                 <span class="card-text">Farmácia</span>
             </a>
+            <a href="#" class="categoria-card" style="background-color: #F8F0FF;">
+                <i class="fa-solid fa-wine-bottle" style="position:absolute; font-size:4rem; color:#6F42C1; opacity:0.15; bottom:-5px; right:-5px; transform: rotate(-10deg);"></i>
+                <div class="overlay"></div>
+                <span class="card-text">Bebidas</span>
+            </a>
+            <a href="#" class="categoria-card" style="background-color: #E8F5E9;">
+                <i class="fa-solid fa-wrench" style="position:absolute; font-size:4rem; color:#198754; opacity:0.15; bottom:-5px; right:-5px; transform: rotate(-10deg);"></i>
+                <div class="overlay"></div>
+                <span class="card-text">Serviços</span>
+            </a>
+        </div>
+
+        <h2 class="section-title">Comércios e Serviços Cadastrados</h2>
+        <div class="lista-container" id="lista-comercios-dinamica">
+            <div class="loading-text">Conectando...</div>
         </div>
     </div>
 
@@ -145,8 +158,8 @@
                 <span><i class="fa-solid fa-image icon"></i> Adicionar Banner Global</span>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc"></i>
             </div>
-            <div class="menu-item" onclick="abrirModal('modal-empresa')">
-                <span><i class="fa-solid fa-store icon"></i> Cadastrar Nova Categoria</span>
+            <div class="menu-item" onclick="abrirModal('modal-comercio')">
+                <span><i class="fa-solid fa-store icon"></i> Cadastrar Comércio / Serviço</span>
                 <i class="fa-solid fa-chevron-right" style="color:#ccc"></i>
             </div>
         </div>
@@ -163,12 +176,29 @@
         </form>
     </div>
 
-    <div class="modal-content" id="modal-empresa">
-        <div class="modal-header"><h2>Nova Categoria</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
-        <form id="form-empresa">
-            <div class="form-group"><label>Nome da Categoria</label><input type="text" id="empresa-nome" required></div>
-            <div class="form-group"><label>Link da Imagem (Imgur)</label><input type="url" id="empresa-img" required></div>
-            <button type="submit" class="btn-submit">Salvar Empresa</button>
+    <div class="modal-content" id="modal-comercio">
+        <div class="modal-header"><h2>Cadastrar Negócio</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <form id="form-comercio">
+            <div class="form-group">
+                <label>Nome da Empresa ou Profissional</label>
+                <input type="text" id="comercio-nome" placeholder="Ex: Elétrica Luz Total" required>
+            </div>
+            <div class="form-group">
+                <label>Descrição Curta</label>
+                <input type="text" id="comercio-desc" placeholder="Ex: Instalações e Reparos" required>
+            </div>
+            <div class="form-group">
+                <label>Escolha a Categoria Principal</label>
+                <select id="comercio-categoria" required>
+                    <option value="mercado">Mercados e Mercearias</option>
+                    <option value="farmacia">Farmácias</option>
+                    <option value="bebidas">Distribuidora de Bebidas</option>
+                    <option value="alimentacao">Alimentação (Lanches, Pizzas)</option>
+                    <option value="servicos">Serviços Gerais (Mecânica, Elétrica)</option>
+                    <option value="beleza">Beleza e Estética</option>
+                </select>
+            </div>
+            <button type="submit" class="btn-submit">Cadastrar no App</button>
         </form>
     </div>
 
@@ -180,7 +210,7 @@
                 <span id="txt-arquivo">Clique para escolher imagem</span>
                 <input type="file" id="arquivo-img" accept="image/*" required onchange="document.getElementById('txt-arquivo').innerText = this.files[0].name">
             </div>
-            <button type="submit" class="btn-submit" id="btn-up-banner">Publicar Banner em Tudo</button>
+            <button type="submit" class="btn-submit" id="btn-up-banner">Publicar Banner</button>
         </form>
     </div>
 
@@ -209,19 +239,26 @@
         const db = getFirestore(app);
         const storage = getStorage(app);
 
-        // --- FUNÇÕES DE INTERFACE ---
-        window.mudarAba = (idAba, el) => {
-            document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-            document.getElementById(idAba).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            el.classList.add('active');
-        };
+        // Funções UI
+        window.mudarAba = (idAba, el) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById(idAba).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); };
         window.abrirModal = (id) => { document.getElementById('fundo-modal').classList.add('active'); document.getElementById(id).classList.add('active'); };
         window.fecharModais = () => { document.getElementById('fundo-modal').classList.remove('active'); document.querySelectorAll('.modal-content').forEach(m => m.classList.remove('active')); };
 
-        // --- LER BANNER (SINCRONIZA NAS DUAS ABAS) ---
-        const qBanner = query(collection(db, "banners"), orderBy("timestamp", "desc"), limit(1));
-        onSnapshot(qBanner, (snap) => {
+        // Dicionário Visual: Define o ícone e a cor baseado na categoria escolhida
+        function getIconeCategoria(categoria) {
+            const configs = {
+                'mercado': { icone: 'fa-cart-shopping', corFundo: '#E7F1FF', corIcone: '#0D6EFD' },
+                'farmacia': { icone: 'fa-pills', corFundo: '#FFF0F0', corIcone: '#DC3545' },
+                'bebidas': { icone: 'fa-wine-bottle', corFundo: '#F8F0FF', corIcone: '#6F42C1' },
+                'alimentacao': { icone: 'fa-burger', corFundo: '#FFF3E0', corIcone: '#FD7E14' },
+                'servicos': { icone: 'fa-wrench', corFundo: '#E8F5E9', corIcone: '#198754' },
+                'beleza': { icone: 'fa-scissors', corFundo: '#FCE4EC', corIcone: '#D81B60' }
+            };
+            return configs[categoria] || { icone: 'fa-store', corFundo: '#F4F4F4', corIcone: '#6C757D' };
+        }
+
+        // LER BANNER
+        onSnapshot(query(collection(db, "banners"), orderBy("timestamp", "desc"), limit(1)), (snap) => {
             if (!snap.empty) {
                 const url = snap.docs[0].data().url;
                 document.querySelectorAll(".banner-placeholder").forEach(b => {
@@ -231,39 +268,62 @@
             }
         });
 
-        // --- LER PEDIDOS ---
+        // LER PEDIDOS
         onSnapshot(query(collection(db, "pedidos"), orderBy("timestamp", "desc")), (snap) => {
             const container = document.getElementById("lista-pedidos-dinamica");
             container.innerHTML = "";
             snap.forEach(doc => {
                 const d = doc.data();
-                container.innerHTML += `<div class="pedido-item"><div><h4>${d.titulo}</h4><p>${d.local}</p></div><span class="status-tag">Aberto</span></div>`;
+                container.innerHTML += `<div class="lista-item"><div class="item-info"><h4>${d.titulo}</h4><p>${d.local}</p></div><span class="status-tag">Aberto</span></div>`;
             });
         });
 
-        // --- LER EMPRESAS/CATEGORIAS ---
-        onSnapshot(query(collection(db, "empresas"), orderBy("timestamp", "asc")), (snap) => {
-            const container = document.getElementById("grid-empresas-dinamico");
+        // LER COMÉRCIOS DINÂMICOS
+        onSnapshot(query(collection(db, "comercios"), orderBy("timestamp", "desc")), (snap) => {
+            const container = document.getElementById("lista-comercios-dinamica");
             container.innerHTML = "";
+            if(snap.empty) { container.innerHTML = "<div class='loading-text'>Nenhuma empresa ainda.</div>"; return;}
+            
             snap.forEach(doc => {
                 const d = doc.data();
-                container.innerHTML += `<a href="#" class="categoria-card"><img src="${d.imagem}"><div class="overlay"></div><span class="card-text">${d.nome}</span></a>`;
+                // Puxa as cores e o ícone certo dependendo da categoria salva
+                const estilo = getIconeCategoria(d.categoria);
+                
+                container.innerHTML += `
+                    <div class="lista-item">
+                        <div class="item-icon" style="background-color: ${estilo.corFundo}; color: ${estilo.corIcone};">
+                            <i class="fa-solid ${estilo.icone}"></i>
+                        </div>
+                        <div class="item-info">
+                            <h4>${d.nome}</h4>
+                            <p>${d.descricao}</p>
+                        </div>
+                        <div class="btn-call"><i class="fa-solid fa-phone"></i></div>
+                    </div>
+                `;
             });
         });
 
-        // --- SALVAR DADOS ---
+        // SALVAR DADOS
         document.getElementById("form-pedido").onsubmit = async (e) => {
             e.preventDefault();
             await addDoc(collection(db, "pedidos"), { titulo: document.getElementById("pedido-titulo").value, local: document.getElementById("pedido-local").value, timestamp: serverTimestamp() });
             e.target.reset(); fecharModais();
         };
 
-        document.getElementById("form-empresa").onsubmit = async (e) => {
+        document.getElementById("form-comercio").onsubmit = async (e) => {
             e.preventDefault();
-            await addDoc(collection(db, "empresas"), { nome: document.getElementById("empresa-nome").value, imagem: document.getElementById("empresa-img").value, timestamp: serverTimestamp() });
+            // Salva o comércio e a categoria escolhida no <select>
+            await addDoc(collection(db, "comercios"), { 
+                nome: document.getElementById("comercio-nome").value, 
+                descricao: document.getElementById("comercio-desc").value, 
+                categoria: document.getElementById("comercio-categoria").value,
+                timestamp: serverTimestamp() 
+            });
             e.target.reset(); fecharModais();
         };
 
+        // SALVAR BANNER
         document.getElementById("form-banner").onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById("btn-up-banner");
@@ -274,9 +334,9 @@
                 await uploadBytes(sRef, file);
                 const url = await getDownloadURL(sRef);
                 await addDoc(collection(db, "banners"), { url, timestamp: serverTimestamp() });
-                fecharModais(); alert("Banner atualizado em todas as abas!");
+                fecharModais(); alert("Banner atualizado!");
             } catch (err) { alert("Erro ao subir banner."); }
-            btn.innerText = "Publicar Banner em Tudo"; btn.disabled = false;
+            btn.innerText = "Publicar Banner"; btn.disabled = false;
         };
     </script>
 </body>
