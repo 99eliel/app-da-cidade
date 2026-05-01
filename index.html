@@ -4,15 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>App da Cidade</title>
+    <!-- Fonte Inter do Google (A mesma usada no design) -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- Ícones do FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            --blue-primary: #0D6EFD;
+            --blue-primary: #2563EB; /* Azul vibrante do novo design */
+            --blue-light: #EFF6FF;
+            --green-whatsapp: #25D366;
+            --green-badge-bg: #E6F4EA;
+            --green-badge-text: #137333;
+            --text-main: #111827;
+            --text-muted: #6B7280;
+            --border-color: #E5E7EB;
             --bg-color: #FFFFFF;
-            --text-main: #1A1D1F;
-            --text-muted: #6F767E;
-            --border-color: #EFEFEF;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
@@ -23,40 +29,129 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* Header */
-        .header-app { padding: 50px 20px 20px 20px; background-color: white; position: sticky; top: 0; z-index: 100; }
-        .search-container { background-color: #F4F4F4; border-radius: 12px; padding: 12px 15px; display: flex; align-items: center; gap: 10px; }
-        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.95rem; }
-        .section-title { font-size: 1.2rem; font-weight: 700; margin: 25px 20px 15px 20px; }
-
-        /* Banner Global */
-        .banner-container { margin: 0 20px 20px 20px; border-radius: 16px; height: 145px; background-color: #f8f9fa; display: none; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
-        .banner-container img { width: 100%; height: 100%; object-fit: cover; animation: fadeIn 0.5s; }
-
-        /* Grid Categorias Fixas */
-        .grid-categorias { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 25px; }
-        .categoria-card { border-radius: 14px; height: 110px; position: relative; overflow: hidden; text-decoration: none; display: flex; align-items: center; justify-content: center; box-shadow: 0 3px 10px rgba(0,0,0,0.05); transition: transform 0.1s; }
-        .categoria-card:active { transform: scale(0.96); }
-        .categoria-card img { width: 100%; height: 100%; object-fit: cover; position: absolute; top: 0; left: 0; z-index: 1; }
-        .overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.2); z-index: 2; }
-        .card-text { position: relative; z-index: 3; color: white; font-weight: 800; font-size: 1.05rem; text-shadow: 1px 1px 4px rgba(0,0,0,0.7); text-align: center; }
-
-        /* Listas (Pedidos e Empresas Dinâmicas) */
-        .lista-container { padding: 0 20px; }
-        .lista-item { border-bottom: 1px solid var(--border-color); padding: 18px 0; display: flex; justify-content: space-between; align-items: center; }
+        /* --- HEADER NOVO DESIGN --- */
+        .top-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 20px 10px 20px;
+            background-color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .location { font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
+        .location i.fa-location-dot { color: var(--blue-primary); font-size: 1.1rem; }
+        .location i.fa-chevron-down { font-size: 0.8rem; color: var(--text-main); }
         
-        .item-icon { width: 50px; height: 50px; border-radius: 14px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; margin-right: 15px; flex-shrink: 0;}
-        .item-info { flex-grow: 1; }
-        .item-info h4 { font-size: 1rem; font-weight: 600; margin-bottom: 4px; color: var(--text-main); }
-        .item-info p { font-size: 0.8rem; color: var(--text-muted); }
+        .notification { position: relative; font-size: 1.4rem; color: var(--text-main); }
+        .notification .badge { position: absolute; top: -2px; right: -4px; background-color: #EF4444; color: white; font-size: 0.65rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+
+        /* BUSCA */
+        .search-wrapper { padding: 0 20px 15px 20px; background-color: white; }
+        .search-container { border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 1rem; color: var(--text-main); }
+        .search-container i { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* BANNER */
+        .banner-destaque {
+            background: linear-gradient(220deg, #5AB3E8 10%, #0D6EFD 90%);
+            border-radius: 16px;
+            padding: 20px;
+            margin: 0 20px 15px 20px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            display: none; /* Só mostra se houver banner no banco */
+        }
+        .banner-conteudo { display: flex; justify-content: space-between; align-items: center; position: relative; z-index: 2; }
+        .bloco-texto h1 { font-size: 20px; font-weight: 800; margin: 0 0 8px 0; text-shadow: 1px 1px 2px rgba(255,255,255,0.3); line-height: 1.2; }
+        .bloco-texto p { font-size: 13px; font-weight: 500; margin: 0 0 12px 0; line-height: 1.4; opacity: 0.95; }
+        .btn-saiba-mais { background-color: #FFC107; color: #0D6EFD; border: none; border-radius: 6px; padding: 8px 16px; font-size: 11px; font-weight: 800; text-transform: uppercase; cursor: pointer; }
+        .imagem-ilustrativa { height: 110px; mix-blend-mode: multiply; object-fit: contain; }
+        .container-pontos { display: flex; justify-content: center; gap: 6px; margin-top: 15px; }
+        .ponto { width: 6px; height: 6px; background-color: rgba(255,255,255,0.4); border-radius: 50%; }
+        .ponto.ativo { background-color: white; }
+
+        /* BOTÃO AÇÃO PRINCIPAL */
+        .btn-acao-principal {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: calc(100% - 40px); margin: 0 auto 20px auto;
+            background-color: var(--blue-primary); color: white;
+            padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer;
+        }
+        .btn-acao-principal i { font-size: 1.2rem; }
+
+        /* TÍTULO SEÇÃO */
+        .section-header { display: flex; justify-content: space-between; align-items: center; margin: 0 20px 15px 20px; }
+        .section-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
+        .section-header a { font-size: 0.9rem; font-weight: 600; color: var(--blue-primary); text-decoration: none; }
+
+        /* LISTA E CARDS (DESIGN EXATO) */
+        .lista-container { padding: 0 20px; display: flex; flex-direction: column; gap: 15px; }
+        .feed-card {
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 16px;
+            background-color: white;
+            position: relative;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.02);
+        }
+        .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
+        .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: #F3F4F6; }
+        .avatar-empresa { width: 50px; height: 50px; border-radius: 50%; background-color: #111; color: #FFC107; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; text-align: center; line-height: 1.1; }
+        .avatar-empresa i { font-size: 1.2rem; margin-bottom: 2px; }
         
-        .status-tag { color: #1B7A43; font-weight: 700; font-size: 0.8rem; background: #E8F5E9; padding: 4px 8px; border-radius: 6px; }
-        .btn-call { width: 40px; height: 40px; border-radius: 50%; background-color: white; border: 1px solid var(--border-color); color: var(--blue-primary); display: flex; align-items: center; justify-content: center; font-size: 1.2rem; cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .user-info { flex: 1; }
+        .name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
+        .name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; }
+        .name i.fa-circle-check { color: var(--blue-primary); font-size: 0.85rem; }
+        .time { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
 
-        .btn-postar-float { display: block; width: calc(100% - 40px); margin: 10px auto 20px auto; background-color: var(--blue-primary); color: white; padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer; box-shadow: 0 4px 12px rgba(13, 110, 253, 0.25); }
+        .type-row { display: flex; justify-content: space-between; align-items: center; }
+        .type-user { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .type-user i { color: var(--blue-primary); }
+        .type-user i.fa-building { color: #10B981; }
 
-        /* Modais */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; opacity: 0; transition: opacity 0.3s; }
+        /* Selos */
+        .badge-service { background-color: var(--blue-light); color: var(--blue-primary); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
+        .badge-job { background-color: var(--green-badge-bg); color: var(--green-badge-text); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
+
+        /* Conteúdo do Card */
+        .card-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .card-desc { font-size: 0.85rem; line-height: 1.5; color: var(--text-main); margin-bottom: 12px; }
+        
+        /* Tags do Card */
+        .card-tags { display: flex; gap: 8px; margin-bottom: 10px; }
+        .tag { background-color: #F3F4F6; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 4px; }
+        .card-footer { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
+        /* Botão WhatsApp Flutuante no Card */
+        .btn-whatsapp {
+            position: absolute;
+            bottom: 16px;
+            right: 16px;
+            width: 45px;
+            height: 45px;
+            background-color: var(--green-whatsapp);
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            text-decoration: none;
+            box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3);
+        }
+
+        /* --- NAV INFERIOR --- */
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; display: flex; justify-content: space-around; padding: 12px 0 25px 0; border-top: 1px solid var(--border-color); z-index: 100; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.7rem; font-weight: 600; gap: 4px; cursor: pointer; }
+        .nav-item.active { color: var(--blue-primary); }
+        .nav-item i { font-size: 1.4rem; }
+
+        /* Modais (Mantidos do anterior) */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; opacity: 0; }
         .modal-overlay.active { display: block; opacity: 1; }
         .modal-content { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 20px; z-index: 201; transition: bottom 0.3s cubic-bezier(0.1, 0.8, 0.3, 1); max-height: 90vh; overflow-y: auto; }
         .modal-content.active { bottom: 0; }
@@ -66,144 +161,178 @@
         .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
         .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; background: #fafafa; }
         .btn-submit { width: 100%; padding: 16px; border: none; border-radius: 10px; background-color: var(--blue-primary); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
-
         .file-box { border: 2px dashed var(--blue-primary); border-radius: 12px; padding: 20px; text-align: center; background: #f0f7ff; color: var(--blue-primary); font-weight: 600; cursor: pointer; position: relative; margin-bottom: 15px; }
         .file-box input { opacity: 0; position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer; }
-
-        /* Perfil */
-        .header-perfil { background-color: var(--blue-primary); padding: 60px 20px 40px 20px; text-align: center; color: white; border-bottom-left-radius: 24px; border-bottom-right-radius: 24px;}
-        .avatar { width: 90px; height: 90px; background-color: white; color: var(--blue-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 3rem; margin: 0 auto 15px auto; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        .menu-perfil { padding: 20px; }
-        .menu-item { background: white; padding: 18px; border-radius: 12px; margin-bottom: 12px; display: flex; align-items: center; justify-content: space-between; border: 1px solid var(--border-color); cursor: pointer; font-weight: 600; }
-        .menu-item i.icon { color: var(--blue-primary); font-size: 1.2rem; margin-right: 12px; }
-
-        /* Nav Inferior */
-        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; display: flex; justify-content: space-around; padding: 15px 0; border-top: 1px solid var(--border-color); z-index: 100; }
-        .nav-item { display: flex; flex-direction: column; align-items: center; color: #B1B5C3; font-size: 0.7rem; font-weight: 700; gap: 4px; cursor: pointer; }
-        .nav-item.active { color: var(--blue-primary); }
-        .nav-item i { font-size: 1.4rem; }
 
         .loading-text { text-align: center; color: var(--text-muted); padding: 20px; font-size: 0.9rem; width: 100%; }
     </style>
 </head>
 <body>
 
-    <div id="aba-servicos" class="tab-content active">
-        <div class="header-app">
+    <!-- ================= ABA 1: INÍCIO ================= -->
+    <div id="aba-inicio" class="tab-content active">
+        
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <div class="location">
+                <i class="fa-solid fa-location-dot"></i> Pontalina, GO <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <div class="notification">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge">3</span>
+            </div>
+        </div>
+
+        <!-- Busca -->
+        <div class="search-wrapper">
             <div class="search-container">
                 <i class="fa-solid fa-magnifying-glass"></i>
                 <input type="text" placeholder="O que você precisa hoje?">
             </div>
         </div>
 
-        <div class="banner-container banner-placeholder"></div>
+        <!-- BANNER (Oculto até ter imagem no Firebase) -->
+        <div id="area-do-banner" class="banner-destaque">
+            <div class="banner-conteudo">
+                <div class="bloco-texto">
+                    <h1>Precisa de ajuda com algo?</h1>
+                    <p>Poste aqui e encontre profissionais perto de você!</p>
+                    <button class="btn-saiba-mais">SAIBA MAIS</button>
+                </div>
+                <!-- Imagem preenchida via JS -->
+                <div id="banner-img-container"></div>
+            </div>
+            <div class="container-pontos">
+                <span class="ponto"></span><span class="ponto ativo"></span><span class="ponto"></span><span class="ponto"></span>
+            </div>
+        </div>
 
-        <button class="btn-postar-float" onclick="abrirModal('modal-pedido')">+ POSTAR PEDIDO</button>
-        <h2 class="section-title" style="margin-top: 5px;">Pedidos Recentes</h2>
+        <!-- Botão Principal -->
+        <button class="btn-acao-principal" onclick="abrirModal('modal-pedido')">
+            <i class="fa-solid fa-plus"></i> O QUE VOCÊ PRECISA?
+        </button>
+
+        <!-- Título da Seção -->
+        <div class="section-header">
+            <h3>Publicações recentes</h3>
+            <a href="#">Ver todas</a>
+        </div>
         
+        <!-- Feed de Posts (Pré-preenchido com o design exato, mais dados do Firebase entrarão aqui) -->
         <div class="lista-container" id="lista-pedidos-dinamica">
-            <div class="loading-text">Conectando...</div>
+            
+            <!-- Card 1: João Silva -->
+            <div class="feed-card">
+                <div class="card-header">
+                    <img src="https://ui-avatars.com/api/?name=João+Silva&background=0D8ABC&color=fff&rounded=true" class="avatar-img">
+                    <div class="user-info">
+                        <div class="name-row">
+                            <span class="name">João Silva</span>
+                            <span class="time"><i class="fa-regular fa-clock"></i> há 15 min</span>
+                        </div>
+                        <div class="type-row">
+                            <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
+                            <span class="badge-service">Preciso de serviço</span>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="card-title">Preciso de um pintor</h4>
+                <p class="card-desc">Preciso de um pintor para fazer a pintura externa da minha casa. Serviço para começar essa semana. Pagamento à combinar.</p>
+                <div class="card-tags">
+                    <span class="tag"><i class="fa-solid fa-paint-roller"></i> Pintor</span>
+                </div>
+                <div class="card-footer">
+                    <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                </div>
+                <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+
+            <!-- Card 2: Construtora -->
+            <div class="feed-card">
+                <div class="card-header">
+                    <div class="avatar-empresa">
+                        <i class="fa-solid fa-house-chimney"></i>
+                        <span>CONSTRUTORA<br>OLIVEIRA</span>
+                    </div>
+                    <div class="user-info">
+                        <div class="name-row">
+                            <span class="name">Construtora Oliveira <i class="fa-solid fa-circle-check"></i></span>
+                            <span class="time"><i class="fa-regular fa-clock"></i> há 32 min</span>
+                        </div>
+                        <div class="type-row">
+                            <span class="type-user">Empresa <i class="fa-solid fa-building"></i></span>
+                            <span class="badge-job">Vaga de emprego</span>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="card-title">Contrata-se funcionário</h4>
+                <p class="card-desc">Contratamos ajudante de obra com experiência. Necessário ser responsável e ter disponibilidade para trabalho em equipe. Interessados, entrar em contato.</p>
+                <div class="card-tags">
+                    <span class="tag"><i class="fa-solid fa-briefcase"></i> Emprego</span>
+                </div>
+                <div class="card-footer">
+                    <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                </div>
+                <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+
+            <!-- Card 3: Maria -->
+            <div class="feed-card">
+                <div class="card-header">
+                    <img src="https://ui-avatars.com/api/?name=Maria+Aparecida&background=F472B6&color=fff&rounded=true" class="avatar-img">
+                    <div class="user-info">
+                        <div class="name-row">
+                            <span class="name">Maria Aparecida</span>
+                            <span class="time"><i class="fa-regular fa-clock"></i> há 1 h</span>
+                        </div>
+                        <div class="type-row">
+                            <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
+                            <span class="badge-service">Preciso de serviço</span>
+                        </div>
+                    </div>
+                </div>
+                <h4 class="card-title">Preciso de faxineira</h4>
+                <p class="card-desc">Preciso de uma faxineira para serviço semanal em casa. Preferência que tenha referência. Entrar em contato.</p>
+                <div class="card-tags">
+                    <span class="tag"><i class="fa-solid fa-broom"></i> Faxineira</span>
+                </div>
+                <div class="card-footer">
+                    <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                </div>
+                <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+            </div>
+
+            <div class="loading-text">Carregando mais do Firebase...</div>
         </div>
     </div>
 
-    <div id="aba-empresas" class="tab-content">
-        <div class="header-app">
-            <div class="search-container">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="Buscar loja ou serviço...">
-            </div>
-        </div>
+    <!-- ABAS PLACEHOLDERS (Para o menu inferior funcionar) -->
+    <div id="aba-categorias" class="tab-content"><div class="loading-text">Aba Categorias em construção...</div></div>
+    <div id="aba-perfil" class="tab-content"><div class="loading-text">Aba Perfil em construção... <button onclick="abrirModal('modal-banner')" style="margin-top:20px; padding:10px;">Adicionar Banner</button></div></div>
 
-        <div class="banner-container banner-placeholder"></div>
-
-        <h2 class="section-title" style="margin-top: 5px;">Explorar Categorias</h2>
-        
-        <div class="grid-categorias">
-            <a href="#" class="categoria-card" style="background-color: #E7F1FF;">
-                <img src="https://i.imgur.com/beMaVEG.png">
-                <div class="overlay"></div>
-                <span class="card-text">Mercado</span>
-            </a>
-            <a href="#" class="categoria-card" style="background-color: #FFF0F0;">
-                <i class="fa-solid fa-pills" style="position:absolute; font-size:4rem; color:#DC3545; opacity:0.15; bottom:-5px; right:-5px; transform: rotate(-10deg);"></i>
-                <div class="overlay"></div>
-                <span class="card-text">Farmácia</span>
-            </a>
-            <a href="#" class="categoria-card" style="background-color: #F8F0FF;">
-                <i class="fa-solid fa-wine-bottle" style="position:absolute; font-size:4rem; color:#6F42C1; opacity:0.15; bottom:-5px; right:-5px; transform: rotate(-10deg);"></i>
-                <div class="overlay"></div>
-                <span class="card-text">Bebidas</span>
-            </a>
-            <a href="#" class="categoria-card" style="background-color: #E8F5E9;">
-                <i class="fa-solid fa-wrench" style="position:absolute; font-size:4rem; color:#198754; opacity:0.15; bottom:-5px; right:-5px; transform: rotate(-10deg);"></i>
-                <div class="overlay"></div>
-                <span class="card-text">Serviços</span>
-            </a>
-        </div>
-
-        <h2 class="section-title">Comércios e Serviços Cadastrados</h2>
-        <div class="lista-container" id="lista-comercios-dinamica">
-            <div class="loading-text">Conectando...</div>
-        </div>
-    </div>
-
-    <div id="aba-perfil" class="tab-content">
-        <div class="header-perfil">
-            <div class="avatar"><i class="fa-solid fa-user"></i></div>
-            <div class="perfil-nome">Eliel</div>
-            <div style="font-size: 0.9rem; opacity: 0.9;">Pontalina, GO</div>
-        </div>
-        <div class="menu-perfil">
-            <div class="menu-item" onclick="abrirModal('modal-banner')">
-                <span><i class="fa-solid fa-image icon"></i> Adicionar Banner Global</span>
-                <i class="fa-solid fa-chevron-right" style="color:#ccc"></i>
-            </div>
-            <div class="menu-item" onclick="abrirModal('modal-comercio')">
-                <span><i class="fa-solid fa-store icon"></i> Cadastrar Comércio / Serviço</span>
-                <i class="fa-solid fa-chevron-right" style="color:#ccc"></i>
-            </div>
-        </div>
-    </div>
-
+    <!-- ================= MODAIS ================= -->
     <div class="modal-overlay" id="fundo-modal" onclick="fecharModais()"></div>
 
+    <!-- Modal Novo Pedido -->
     <div class="modal-content" id="modal-pedido">
         <div class="modal-header"><h2>Novo Pedido</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
         <form id="form-pedido">
             <div class="form-group"><label>O que você precisa?</label><input type="text" id="pedido-titulo" required></div>
-            <div class="form-group"><label>Bairro</label><input type="text" id="pedido-local" value="Centro"></div>
-            <button type="submit" class="btn-submit">Publicar Pedido</button>
-        </form>
-    </div>
-
-    <div class="modal-content" id="modal-comercio">
-        <div class="modal-header"><h2>Cadastrar Negócio</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
-        <form id="form-comercio">
+            <div class="form-group"><label>Descrição / Detalhes</label><input type="text" id="pedido-desc" placeholder="Detalhes do serviço..." required></div>
             <div class="form-group">
-                <label>Nome da Empresa ou Profissional</label>
-                <input type="text" id="comercio-nome" placeholder="Ex: Elétrica Luz Total" required>
-            </div>
-            <div class="form-group">
-                <label>Descrição Curta</label>
-                <input type="text" id="comercio-desc" placeholder="Ex: Instalações e Reparos" required>
-            </div>
-            <div class="form-group">
-                <label>Escolha a Categoria Principal</label>
-                <select id="comercio-categoria" required>
-                    <option value="mercado">Mercados e Mercearias</option>
-                    <option value="farmacia">Farmácias</option>
-                    <option value="bebidas">Distribuidora de Bebidas</option>
-                    <option value="alimentacao">Alimentação (Lanches, Pizzas)</option>
-                    <option value="servicos">Serviços Gerais (Mecânica, Elétrica)</option>
-                    <option value="beleza">Beleza e Estética</option>
+                <label>Tipo de Publicação</label>
+                <select id="pedido-tipo">
+                    <option value="servico">Preciso de serviço</option>
+                    <option value="emprego">Vaga de emprego</option>
                 </select>
             </div>
-            <button type="submit" class="btn-submit">Cadastrar no App</button>
+            <button type="submit" class="btn-submit">Publicar</button>
         </form>
     </div>
 
+    <!-- Modal Banner -->
     <div class="modal-content" id="modal-banner">
-        <div class="modal-header"><h2>Subir Novo Banner</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <div class="modal-header"><h2>Subir Banner (Apenas Imagem PNG)</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
         <form id="form-banner">
             <div class="file-box">
                 <i class="fa-solid fa-cloud-arrow-up"></i><br>
@@ -214,12 +343,24 @@
         </form>
     </div>
 
+    <!-- NAV INFERIOR (Identica ao Design) -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="mudarAba('aba-servicos', this)"><i class="fa-solid fa-house"></i><span>Início</span></div>
-        <div class="nav-item" onclick="mudarAba('aba-empresas', this)"><i class="fa-solid fa-layer-group"></i><span>Categorias</span></div>
-        <div class="nav-item" onclick="mudarAba('aba-perfil', this)"><i class="fa-regular fa-user"></i><span>Perfil</span></div>
+        <div class="nav-item active" onclick="mudarAba('aba-inicio', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('aba-categorias', this)">
+            <!-- Ícone de Grid -->
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:2px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Categorias</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('aba-perfil', this)">
+            <i class="fa-regular fa-user"></i>
+            <span>Perfil</span>
+        </div>
     </nav>
 
+    <!-- FIREBASE & JS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
         import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
@@ -244,86 +385,79 @@
         window.abrirModal = (id) => { document.getElementById('fundo-modal').classList.add('active'); document.getElementById(id).classList.add('active'); };
         window.fecharModais = () => { document.getElementById('fundo-modal').classList.remove('active'); document.querySelectorAll('.modal-content').forEach(m => m.classList.remove('active')); };
 
-        // Dicionário Visual: Define o ícone e a cor baseado na categoria escolhida
-        function getIconeCategoria(categoria) {
-            const configs = {
-                'mercado': { icone: 'fa-cart-shopping', corFundo: '#E7F1FF', corIcone: '#0D6EFD' },
-                'farmacia': { icone: 'fa-pills', corFundo: '#FFF0F0', corIcone: '#DC3545' },
-                'bebidas': { icone: 'fa-wine-bottle', corFundo: '#F8F0FF', corIcone: '#6F42C1' },
-                'alimentacao': { icone: 'fa-burger', corFundo: '#FFF3E0', corIcone: '#FD7E14' },
-                'servicos': { icone: 'fa-wrench', corFundo: '#E8F5E9', corIcone: '#198754' },
-                'beleza': { icone: 'fa-scissors', corFundo: '#FCE4EC', corIcone: '#D81B60' }
-            };
-            return configs[categoria] || { icone: 'fa-store', corFundo: '#F4F4F4', corIcone: '#6C757D' };
-        }
-
-        // LER BANNER
+        // LER BANNER E INSERIR A IMAGEM NO LUGAR CERTO DO DESIGN
         onSnapshot(query(collection(db, "banners"), orderBy("timestamp", "desc"), limit(1)), (snap) => {
             if (!snap.empty) {
                 const url = snap.docs[0].data().url;
-                document.querySelectorAll(".banner-placeholder").forEach(b => {
-                    b.innerHTML = `<img src="${url}">`;
-                    b.style.display = "block";
-                });
+                const container = document.getElementById("area-do-banner");
+                const imgSlot = document.getElementById("banner-img-container");
+                imgSlot.innerHTML = `<img src="${url}" class="imagem-ilustrativa">`;
+                container.style.display = "block"; // Revela o banner
             }
         });
 
-        // LER PEDIDOS
+        // LER PEDIDOS NOVOS E INSERIR NO ESTILO NOVO
         onSnapshot(query(collection(db, "pedidos"), orderBy("timestamp", "desc")), (snap) => {
             const container = document.getElementById("lista-pedidos-dinamica");
-            container.innerHTML = "";
-            snap.forEach(doc => {
-                const d = doc.data();
-                container.innerHTML += `<div class="lista-item"><div class="item-info"><h4>${d.titulo}</h4><p>${d.local}</p></div><span class="status-tag">Aberto</span></div>`;
-            });
-        });
-
-        // LER COMÉRCIOS DINÂMICOS
-        onSnapshot(query(collection(db, "comercios"), orderBy("timestamp", "desc")), (snap) => {
-            const container = document.getElementById("lista-comercios-dinamica");
-            container.innerHTML = "";
-            if(snap.empty) { container.innerHTML = "<div class='loading-text'>Nenhuma empresa ainda.</div>"; return;}
+            // Mantém os 3 cards hardcoded e adiciona os novos embaixo
+            // Em produção real, você limparia (container.innerHTML = "") e renderizaria tudo do banco
             
-            snap.forEach(doc => {
-                const d = doc.data();
-                // Puxa as cores e o ícone certo dependendo da categoria salva
-                const estilo = getIconeCategoria(d.categoria);
-                
-                container.innerHTML += `
-                    <div class="lista-item">
-                        <div class="item-icon" style="background-color: ${estilo.corFundo}; color: ${estilo.corIcone};">
-                            <i class="fa-solid ${estilo.icone}"></i>
+            snap.docChanges().forEach((change) => {
+                if (change.type === "added") {
+                    const d = change.doc.data();
+                    const badgeClass = d.tipo === 'emprego' ? 'badge-job' : 'badge-service';
+                    const badgeText = d.tipo === 'emprego' ? 'Vaga de emprego' : 'Preciso de serviço';
+                    const tagIcon = d.tipo === 'emprego' ? 'fa-briefcase' : 'fa-handshake';
+                    const tagText = d.tipo === 'emprego' ? 'Emprego' : 'Serviço';
+
+                    const novoCard = `
+                        <div class="feed-card" style="animation: fadeIn 0.5s;">
+                            <div class="card-header">
+                                <img src="https://ui-avatars.com/api/?name=Eliel&background=0D6EFD&color=fff&rounded=true" class="avatar-img">
+                                <div class="user-info">
+                                    <div class="name-row">
+                                        <span class="name">Eliel (Você)</span>
+                                        <span class="time"><i class="fa-regular fa-clock"></i> agora</span>
+                                    </div>
+                                    <div class="type-row">
+                                        <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
+                                        <span class="${badgeClass}">${badgeText}</span>
+                                    </div>
+                                </div>
+                            </div>
+                            <h4 class="card-title">${d.titulo}</h4>
+                            <p class="card-desc">${d.descricao}</p>
+                            <div class="card-tags">
+                                <span class="tag"><i class="fa-solid ${tagIcon}"></i> ${tagText}</span>
+                            </div>
+                            <div class="card-footer">
+                                <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                            </div>
+                            <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
                         </div>
-                        <div class="item-info">
-                            <h4>${d.nome}</h4>
-                            <p>${d.descricao}</p>
-                        </div>
-                        <div class="btn-call"><i class="fa-solid fa-phone"></i></div>
-                    </div>
-                `;
+                    `;
+                    // Insere no topo da lista (logo após o título)
+                    container.insertAdjacentHTML('afterbegin', novoCard);
+                }
             });
+            // Remove o texto de loading
+            const loading = container.querySelector('.loading-text');
+            if(loading) loading.remove();
         });
 
-        // SALVAR DADOS
+        // SALVAR NOVO PEDIDO
         document.getElementById("form-pedido").onsubmit = async (e) => {
             e.preventDefault();
-            await addDoc(collection(db, "pedidos"), { titulo: document.getElementById("pedido-titulo").value, local: document.getElementById("pedido-local").value, timestamp: serverTimestamp() });
-            e.target.reset(); fecharModais();
-        };
-
-        document.getElementById("form-comercio").onsubmit = async (e) => {
-            e.preventDefault();
-            // Salva o comércio e a categoria escolhida no <select>
-            await addDoc(collection(db, "comercios"), { 
-                nome: document.getElementById("comercio-nome").value, 
-                descricao: document.getElementById("comercio-desc").value, 
-                categoria: document.getElementById("comercio-categoria").value,
+            await addDoc(collection(db, "pedidos"), { 
+                titulo: document.getElementById("pedido-titulo").value, 
+                descricao: document.getElementById("pedido-desc").value, 
+                tipo: document.getElementById("pedido-tipo").value,
                 timestamp: serverTimestamp() 
             });
             e.target.reset(); fecharModais();
         };
 
-        // SALVAR BANNER
+        // SALVAR BANNER (MANTIDO)
         document.getElementById("form-banner").onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById("btn-up-banner");
@@ -334,7 +468,7 @@
                 await uploadBytes(sRef, file);
                 const url = await getDownloadURL(sRef);
                 await addDoc(collection(db, "banners"), { url, timestamp: serverTimestamp() });
-                fecharModais(); alert("Banner atualizado!");
+                fecharModais(); alert("Banner publicado!");
             } catch (err) { alert("Erro ao subir banner."); }
             btn.innerText = "Publicar Banner"; btn.disabled = false;
         };
