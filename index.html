@@ -4,99 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>App da Cidade</title>
-    <!-- Fonte Inter do Google -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Ícones do FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --blue-primary: #2563EB;
             --blue-light: #EFF6FF;
             --green-whatsapp: #25D366;
+            --green-dark: #064E3B;
             --green-badge-bg: #E6F4EA;
             --green-badge-text: #137333;
             --text-main: #111827;
             --text-muted: #6B7280;
             --border-color: #E5E7EB;
             --bg-color: #FFFFFF;
+            --red-danger: #EF4444;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; -webkit-tap-highlight-color: transparent; }
-        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 95px; }
+        body { background-color: var(--bg-color); color: var(--text-main); padding-bottom: 95px; overflow-x: hidden; }
 
-        /* Abas */
         .tab-content { display: none; animation: fadeIn 0.2s ease-in-out; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- HEADER NOVO DESIGN --- */
-        .top-bar {
-            display: flex; justify-content: space-between; align-items: center;
-            padding: 20px 20px 10px 20px; background-color: white;
-            position: sticky; top: 0; z-index: 100;
-        }
+        /* --- ELEMENTOS COMUNS --- */
+        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 10px 20px; background-color: white; position: sticky; top: 0; z-index: 100; }
         .location { font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
-        .location i.fa-location-dot { color: var(--blue-primary); font-size: 1.1rem; }
-        .location i.fa-chevron-down { font-size: 0.8rem; color: var(--text-main); }
+        .location i.fa-location-dot { color: var(--blue-primary); }
         .notification { position: relative; font-size: 1.4rem; color: var(--text-main); }
-        .notification .badge { position: absolute; top: -2px; right: -4px; background-color: #EF4444; color: white; font-size: 0.65rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
+        .notification .badge { position: absolute; top: -2px; right: -4px; background-color: var(--red-danger); color: white; font-size: 0.65rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; border: 2px solid white; }
 
-        /* BUSCA */
-        .search-wrapper { padding: 0 20px 15px 20px; background-color: white; }
-        .search-container { border: 1px solid var(--border-color); border-radius: 12px; padding: 12px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 1rem; color: var(--text-main); }
+        .search-wrapper { padding: 0 20px 15px 20px; background-color: white; display: flex; gap: 10px; }
+        .search-container { flex: 1; border: 1px solid var(--border-color); border-radius: 12px; padding: 10px 16px; display: flex; align-items: center; gap: 10px; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 0.95rem; color: var(--text-main); }
         .search-container i { color: var(--text-muted); font-size: 1.1rem; }
+        .btn-filter { display: flex; align-items: center; gap: 6px; background: white; border: 1px solid var(--border-color); border-radius: 12px; padding: 0 15px; font-weight: 600; font-size: 0.9rem; color: var(--text-main); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
 
-        /* --- CARROSSEL DE BANNERS --- */
-        .carousel-container {
-            position: relative; margin: 0 20px 15px 20px; height: 145px;
-            border-radius: 16px; overflow: hidden; display: none;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05); background-color: #F3F4F6;
-        }
-        .carousel-slide {
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            opacity: 0; transition: opacity 0.6s ease-in-out; z-index: 1;
-        }
+        /* ================= ABA INÍCIO ================= */
+        .carousel-container { position: relative; margin: 0 20px 15px 20px; height: 145px; border-radius: 16px; overflow: hidden; display: none; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .carousel-slide { position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; transition: opacity 0.6s; z-index: 1; }
         .carousel-slide.active { opacity: 1; z-index: 2; }
         .carousel-slide img { width: 100%; height: 100%; object-fit: cover; }
-        .carousel-dots {
-            position: absolute; bottom: 10px; left: 0; right: 0;
-            display: flex; justify-content: center; gap: 6px; z-index: 3;
-        }
-        .dot { width: 7px; height: 7px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); transition: background-color 0.3s; }
-        .dot.active { background-color: white; box-shadow: 0 0 2px rgba(0,0,0,0.5); }
+        .carousel-dots { position: absolute; bottom: 10px; left: 0; right: 0; display: flex; justify-content: center; gap: 6px; z-index: 3; }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.4); }
+        .dot.active { background-color: white; }
 
-        /* BOTÃO AÇÃO PRINCIPAL */
-        .btn-acao-principal {
-            display: flex; align-items: center; justify-content: center; gap: 8px;
-            width: calc(100% - 40px); margin: 0 auto 20px auto;
-            background-color: var(--blue-primary); color: white;
-            padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer;
-        }
-        .btn-acao-principal i { font-size: 1.2rem; }
+        .btn-acao-principal { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 40px); margin: 0 auto 20px auto; background-color: var(--blue-primary); color: white; padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer; }
 
-        /* TÍTULO SEÇÃO */
         .section-header { display: flex; justify-content: space-between; align-items: center; margin: 0 20px 15px 20px; }
-        .section-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
-        .section-header a { font-size: 0.9rem; font-weight: 600; color: var(--blue-primary); text-decoration: none; }
+        .section-header h3 { font-size: 1.1rem; font-weight: 700; }
 
-        /* LISTA E CARDS (DESIGN EXATO DA FOTO) */
         .lista-wrapper { padding: 0 20px; display: flex; flex-direction: column; gap: 15px; }
-        
-        .feed-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; background-color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
+        .feed-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; background-color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); cursor: pointer; }
         .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
         .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: #F3F4F6; }
         
-        /* Avatar especial Construtora */
-        .avatar-empresa { width: 50px; height: 50px; border-radius: 50%; background-color: #111; color: #FFC107; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; text-align: center; line-height: 1.1; }
-        .avatar-empresa i { font-size: 1.2rem; margin-bottom: 2px; }
-
         .user-info { flex: 1; }
         .name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; }
         .name i.fa-circle-check { color: var(--blue-primary); font-size: 0.85rem; }
-        .time { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
-
+        .time { font-size: 0.75rem; color: var(--text-muted); }
         .type-row { display: flex; justify-content: space-between; align-items: center; }
         .type-user { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
         .type-user i { color: var(--blue-primary); }
@@ -104,390 +72,500 @@
 
         .badge-service { background-color: var(--blue-light); color: var(--blue-primary); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
         .badge-job { background-color: var(--green-badge-bg); color: var(--green-badge-text); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
-
-        .card-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
+        .card-title { font-size: 1rem; font-weight: 700; margin-bottom: 6px; }
         .card-desc { font-size: 0.85rem; line-height: 1.5; color: var(--text-main); margin-bottom: 12px; }
-        .card-tags { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
-        .tag { background-color: #F3F4F6; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 4px; }
-        .card-footer { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+        .btn-whatsapp-float { position: absolute; bottom: 16px; right: 16px; width: 45px; height: 45px; background-color: var(--green-whatsapp); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
 
-        .btn-whatsapp { position: absolute; bottom: 16px; right: 16px; width: 45px; height: 45px; background-color: var(--green-whatsapp); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
+        /* ================= ABA CATEGORIAS ================= */
+        .pills-scroll { display: flex; gap: 10px; padding: 0 20px 15px 20px; overflow-x: auto; scrollbar-width: none; }
+        .pills-scroll::-webkit-scrollbar { display: none; }
+        .pill { display: flex; align-items: center; gap: 8px; padding: 8px 16px; background: white; border: 1px solid var(--border-color); border-radius: 20px; font-size: 0.85rem; font-weight: 600; color: var(--text-main); white-space: nowrap; cursor: pointer; }
+        .pill.active { border-color: var(--blue-primary); color: var(--blue-primary); background-color: var(--blue-light); }
+        .pill i { font-size: 1rem; color: var(--text-muted); }
+        .premium-banner { margin: 0 20px 25px 20px; border-radius: 16px; padding: 20px; background: linear-gradient(135deg, #3A60F5 0%, #1E3A8A 100%); color: white; position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 8px; }
+        .badge-star { background: #FFC107; color: #111; font-size: 0.7rem; font-weight: 800; padding: 4px 8px; border-radius: 6px; width: fit-content; }
+        .premium-banner h2 { font-size: 1.4rem; font-weight: 800; z-index: 2; margin:0;}
+        .premium-banner p { font-size: 0.85rem; max-width: 60%; z-index: 2; margin:0 0 10px 0;}
+        .img-doctor-banner { position: absolute; bottom: 0; right: 0; height: 110%; object-fit: contain; z-index: 1; }
+
+        .pro-card-premium { background: white; border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; display: flex; gap: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.03);}
+        .pro-info { flex: 1; display: flex; flex-direction: column; gap: 4px; }
+        .pro-name { font-size: 1rem; font-weight: 700; color: var(--text-main);}
+        .pro-spec { font-size: 0.85rem; font-weight: 600; color: var(--blue-primary); }
+        .pro-actions { display: flex; flex-direction: column; gap: 8px; width: 110px; }
+        .btn-zap-small { background: #10B981; color: white; padding: 8px; border-radius: 8px; font-size: 0.7rem; font-weight: 700; text-align: center; text-decoration: none;}
+
+        /* ================= ABA PERFIL ================= */
+        #aba-perfil { position: relative; height: 100%; width: 100%; overflow: hidden; }
+        #gerenciador-perfis { display: block; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
+        #gerenciador-perfis.hidden { display: none; }
+        #layout-visual-perfil { display: none; width: 100%; height: 100%; overflow-y: auto; padding-bottom: 20px; }
+        #layout-visual-perfil.active { display: block; animation: slideUp 0.3s cubic-bezier(0.1, 0.8, 0.3, 1); }
+        @keyframes slideUp { from { transform: translateY(50px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+
+        .btn-perfil-acao { display: block; width: calc(100% - 40px); text-align: left; background: white; padding: 18px; border-radius: 12px; margin: 0 auto 12px auto; border: 1px solid var(--border-color); cursor: pointer; font-weight: 600; font-size: 1rem; color: var(--text-main); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .card-perfil-teste { display: flex; align-items: center; gap: 15px; padding: 15px; border: 1px solid var(--border-color); border-radius: 12px; margin: 0 20px 10px 20px; cursor: pointer; transition: 0.2s; background: white;}
+        .card-perfil-teste.active { border-color: var(--blue-primary); background: var(--blue-light); box-shadow: 0 2px 8px rgba(37, 99, 235, 0.15);}
+        .card-perfil-teste .p-avatar { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background: #eee; }
+        .card-perfil-teste .p-info { flex: 1; }
+        .card-perfil-teste .p-nome { font-weight: 700; font-size: 1rem; margin-bottom: 2px;}
+        .card-perfil-teste .p-arroba { font-size: 0.8rem; color: var(--text-muted); }
+        .card-perfil-teste .p-edit { color: var(--text-muted); cursor: pointer; font-size: 1rem; padding: 5px; }
+
+        /* Estilos Layout Visual Perfil */
+        .perfil-v-top-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 10px 20px; }
+        .perfil-v-title { font-size: 1.6rem; font-weight: 800; }
+        .btn-v-back { background: none; border: none; font-size: 1.2rem; cursor: pointer; margin-right: 15px; }
+        .perfil-v-user-area { display: flex; align-items: center; gap: 15px; padding: 20px; }
+        .photo-v-img { width: 90px; height: 90px; border-radius: 50%; object-fit: cover; border: 3px solid white; box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
+        .user-v-name { font-size: 1.3rem; font-weight: 700; }
+        .box-v-empresa { background-color: var(--green-dark); border-radius: 12px; padding: 20px; display: flex; justify-content: space-between; align-items: center; margin: 0 20px 25px 20px; color: white; cursor: pointer; }
+        .empresa-v-left { display: flex; align-items: center; gap: 15px; }
+        .empresa-v-text h4 { font-size: 1rem; font-weight: 700; margin-bottom: 3px; }
+        .empresa-v-text p { font-size: 0.8rem; opacity: 0.9; margin:0; }
+        .list-v-link-item { display: flex; justify-content: space-between; align-items: center; padding: 18px 20px; border-bottom: 1px solid var(--border-color); background: white; cursor: pointer; }
+        .list-v-link-item:first-of-type { border-top: 1px solid var(--border-color); }
+        .link-v-left { display: flex; align-items: center; gap: 15px; }
+        .link-v-texts h5 { font-size: 0.9rem; font-weight: 600; margin-bottom: 3px; }
+
+        /* ================= TELA PERFIL EMPRESA (OVERLAY) ================= */
+        .tela-perfil-empresa { position: fixed; top: 0; left: 100%; width: 100%; height: 100%; background-color: white; z-index: 300; overflow-y: auto; transition: left 0.3s; padding-bottom: 40px; }
+        .tela-perfil-empresa.active { left: 0; }
+        .empresa-header { position: relative; height: 160px; background: #eee; }
+        .empresa-cover { width: 100%; height: 100%; object-fit: cover; }
+        .btn-back-circle { position: absolute; top: 20px; left: 20px; width: 36px; height: 36px; border-radius: 50%; background: rgba(0,0,0,0.5); color: white; display: flex; align-items: center; justify-content: center; border: none; cursor:pointer; z-index: 10;}
+        .empresa-logo-box { position: relative; width: 100px; height: 100px; margin: -50px 0 15px 20px; z-index: 2; }
+        .empresa-logo-circle { width: 100%; height: 100%; border-radius: 50%; border: 4px solid white; background-color: white; display: flex; align-items: center; justify-content: center; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.1);}
+        .empresa-logo-circle img { width: 100%; height: 100%; object-fit: cover; }
+        .btn-whatsapp-big { background-color: #128C7E; color: white; width: calc(100% - 40px); margin: 0 20px 20px 20px; border-radius: 12px; padding: 14px; display: flex; align-items: center; justify-content: space-between; border: none; font-size: 1.1rem; cursor: pointer;}
+        .actions-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 20px; margin-bottom: 30px; }
+        .action-card { border: 1px solid var(--border-color); border-radius: 12px; padding: 12px; display: flex; align-items: center; gap: 12px; font-size: 0.85rem;}
 
         /* NAV INFERIOR */
         .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background-color: white; display: flex; justify-content: space-around; padding: 12px 0 25px 0; border-top: 1px solid var(--border-color); z-index: 100; }
         .nav-item { display: flex; flex-direction: column; align-items: center; color: var(--text-muted); font-size: 0.7rem; font-weight: 600; gap: 4px; cursor: pointer; }
         .nav-item.active { color: var(--blue-primary); }
-        .nav-item i { font-size: 1.4rem; }
 
-        /* MODAIS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; opacity: 0; transition: opacity 0.3s; }
-        .modal-overlay.active { display: block; opacity: 1; }
-        .modal-content { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 20px; z-index: 201; transition: bottom 0.3s cubic-bezier(0.1, 0.8, 0.3, 1); max-height: 90vh; overflow-y: auto; }
+        /* MODAIS E FORMS */
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; }
+        .modal-overlay.active { display: block; }
+        .modal-content { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 20px; z-index: 201; transition: bottom 0.3s; max-height: 90vh; overflow-y: auto;}
         .modal-content.active { bottom: 0; }
         .modal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
         .btn-close { background: none; border: none; font-size: 1.5rem; color: var(--text-muted); cursor: pointer; }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; font-weight: 600; font-size: 0.9rem; margin-bottom: 5px; }
         .form-group input, .form-group select { width: 100%; padding: 14px; border: 1px solid #ddd; border-radius: 10px; font-size: 1rem; outline: none; background: #fafafa; }
-        .btn-submit { width: 100%; padding: 16px; border: none; border-radius: 10px; background-color: var(--blue-primary); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
-        .file-box { border: 2px dashed var(--blue-primary); border-radius: 12px; padding: 20px; text-align: center; background: #f0f7ff; color: var(--blue-primary); font-weight: 600; cursor: pointer; position: relative; margin-bottom: 15px; }
-        .file-box input { opacity: 0; position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer; }
-
-        /* Botão do Perfil */
-        .btn-perfil-acao { display: block; width: 100%; text-align: left; background: white; padding: 18px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); cursor: pointer; font-weight: 600; font-size: 1rem; color: var(--text-main); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
-        .btn-perfil-acao i { color: var(--blue-primary); margin-right: 10px; width: 20px; text-align: center; }
+        .btn-submit { width: 100%; padding: 16px; border: none; border-radius: 10px; background-color: var(--blue-primary); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; }
+        
+        .file-box { border: 2px dashed var(--blue-primary); border-radius: 12px; padding: 15px; text-align: center; background: #f0f7ff; color: var(--blue-primary); margin-bottom: 10px; position: relative; font-size: 0.85rem;}
+        .file-box input { opacity: 0; position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer;}
+        #campos-extras-empresa { display: none; background: #F9FAFB; padding: 15px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 15px; }
     </style>
 </head>
 <body>
 
-    <!-- ================= ABA 1: INÍCIO ================= -->
     <div id="aba-inicio" class="tab-content active">
-        
         <div class="top-bar">
-            <div class="location">
-                <i class="fa-solid fa-location-dot"></i> Pontalina, GO <i class="fa-solid fa-chevron-down"></i>
-            </div>
-            <div class="notification">
-                <i class="fa-regular fa-bell"></i>
-                <span class="badge">3</span>
-            </div>
+            <div class="location"><i class="fa-solid fa-location-dot"></i> Pontalina, GO <i class="fa-solid fa-chevron-down"></i></div>
+            <div class="notification"><i class="fa-regular fa-bell"></i><span class="badge">3</span></div>
         </div>
-
         <div class="search-wrapper">
-            <div class="search-container">
-                <i class="fa-solid fa-magnifying-glass"></i>
-                <input type="text" placeholder="O que você precisa hoje?">
-            </div>
+            <div class="search-container"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="O que você precisa hoje?"></div>
         </div>
 
-        <!-- CARROSSEL DE BANNERS AUTOMÁTICO -->
-        <div id="banner-carousel" class="carousel-container">
-            <div id="carousel-slides" class="carousel-slides"></div>
-            <div id="carousel-dots" class="carousel-dots"></div>
-        </div>
+        <div id="banner-carousel" class="carousel-container"><div id="carousel-slides" class="carousel-slides"></div><div id="carousel-dots" class="carousel-dots"></div></div>
 
-        <button class="btn-acao-principal" onclick="abrirModal('modal-pedido')">
-            <i class="fa-solid fa-plus"></i> O QUE VOCÊ PRECISA?
-        </button>
+        <button class="btn-acao-principal" onclick="abrirModal('modal-pedido')"><i class="fa-solid fa-plus"></i> O QUE VOCÊ PRECISA?</button>
 
-        <div class="section-header">
-            <h3>Publicações recentes</h3>
-            <a href="#">Ver todas</a>
-        </div>
-        
-        <!-- WRAPPER DA LISTA: Junta os novos dados com os exemplos -->
-        <div class="lista-wrapper">
-            
-            <!-- 1. Espaço onde entram as publicações novas do Firebase -->
-            <div id="lista-pedidos-firebase" style="display: flex; flex-direction: column; gap: 15px;"></div>
-
-            <!-- 2. Os 3 Exemplos Fixos (iguais a foto) -->
-            <div id="lista-pedidos-exemplos" style="display: flex; flex-direction: column; gap: 15px;">
-                
-                <!-- Card 1: João Silva -->
-                <div class="feed-card">
-                    <div class="card-header">
-                        <img src="https://ui-avatars.com/api/?name=João+Silva&background=0D8ABC&color=fff&rounded=true" class="avatar-img">
-                        <div class="user-info">
-                            <div class="name-row">
-                                <span class="name">João Silva</span>
-                                <span class="time"><i class="fa-regular fa-clock"></i> há 15 min</span>
-                            </div>
-                            <div class="type-row">
-                                <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
-                                <span class="badge-service">Preciso de serviço</span>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="card-title">Preciso de um pintor</h4>
-                    <p class="card-desc">Preciso de um pintor para fazer a pintura externa da minha casa. Serviço para começar essa semana. Pagamento à combinar.</p>
-                    <div class="card-tags">
-                        <span class="tag"><i class="fa-solid fa-paint-roller"></i> Pintor</span>
-                    </div>
-                    <div class="card-footer">
-                        <i class="fa-solid fa-location-dot"></i> Pontalina, GO
-                    </div>
-                    <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
-
-                <!-- Card 2: Construtora -->
-                <div class="feed-card">
-                    <div class="card-header">
-                        <div class="avatar-empresa">
-                            <i class="fa-solid fa-house-chimney"></i>
-                            <span>CONSTRUTORA<br>OLIVEIRA</span>
-                        </div>
-                        <div class="user-info">
-                            <div class="name-row">
-                                <span class="name">Construtora Oliveira <i class="fa-solid fa-circle-check"></i></span>
-                                <span class="time"><i class="fa-regular fa-clock"></i> há 32 min</span>
-                            </div>
-                            <div class="type-row">
-                                <span class="type-user">Empresa <i class="fa-solid fa-building"></i></span>
-                                <span class="badge-job">Vaga de emprego</span>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="card-title">Contrata-se funcionário</h4>
-                    <p class="card-desc">Contratamos ajudante de obra com experiência. Necessário ser responsável e ter disponibilidade para trabalho em equipe. Interessados, entrar em contato.</p>
-                    <div class="card-tags">
-                        <span class="tag"><i class="fa-solid fa-briefcase"></i> Emprego</span>
-                    </div>
-                    <div class="card-footer">
-                        <i class="fa-solid fa-location-dot"></i> Pontalina, GO
-                    </div>
-                    <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
-
-                <!-- Card 3: Maria -->
-                <div class="feed-card">
-                    <div class="card-header">
-                        <img src="https://ui-avatars.com/api/?name=Maria+Aparecida&background=F472B6&color=fff&rounded=true" class="avatar-img">
-                        <div class="user-info">
-                            <div class="name-row">
-                                <span class="name">Maria Aparecida</span>
-                                <span class="time"><i class="fa-regular fa-clock"></i> há 1 h</span>
-                            </div>
-                            <div class="type-row">
-                                <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
-                                <span class="badge-service">Preciso de serviço</span>
-                            </div>
-                        </div>
-                    </div>
-                    <h4 class="card-title">Preciso de faxineira</h4>
-                    <p class="card-desc">Preciso de uma faxineira para serviço semanal em casa. Preferência que tenha referência. Entrar em contato.</p>
-                    <div class="card-tags">
-                        <span class="tag"><i class="fa-solid fa-broom"></i> Faxineira</span>
-                    </div>
-                    <div class="card-footer">
-                        <i class="fa-solid fa-location-dot"></i> Pontalina, GO
-                    </div>
-                    <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
-                </div>
-
-            </div> <!-- Fim dos exemplos -->
-        </div>
+        <div class="section-header"><h3>Publicações recentes</h3></div>
+        <div class="lista-wrapper"><div id="lista-pedidos-firebase"></div></div>
     </div>
 
-    <!-- ================= ABA 2: CATEGORIAS (Placeholder) ================= -->
     <div id="aba-categorias" class="tab-content">
-        <div class="top-bar"><div class="location">Categorias</div></div>
-        <div class="loading-text">Aba Categorias em construção...</div>
-    </div>
-
-    <!-- ================= ABA 3: PERFIL ================= -->
-    <div id="aba-perfil" class="tab-content">
-        <div class="top-bar" style="border-bottom: 1px solid var(--border-color); margin-bottom: 20px;">
-            <div class="location">Meu Perfil</div>
-        </div>
-        <div style="padding: 0 20px; text-align: center; margin-bottom: 30px;">
-            <img src="https://ui-avatars.com/api/?name=Eliel&background=2563EB&color=fff&rounded=true&size=100" style="margin-bottom: 10px;">
-            <h2 style="font-size: 1.3rem;">Eliel</h2>
-            <p style="color: var(--text-muted); font-size: 0.9rem;">Administrador</p>
-        </div>
+        <div class="top-bar"><div class="location"><i class="fa-solid fa-location-dot"></i> Pontalina, GO</div></div>
         
-        <div style="padding: 0 20px;">
-            <button class="btn-perfil-acao" onclick="abrirModal('modal-banner')">
-                <i class="fa-solid fa-image"></i> Adicionar Banner ao Carrossel
+        <div class="pills-scroll">
+            <div class="pill active" onclick="filtrarEmpresas('Todas', this)">Todas</div>
+            <div class="pill" onclick="filtrarEmpresas('Médicos e Saúde', this)"><i class="fa-solid fa-stethoscope"></i> Saúde</div>
+            <div class="pill" onclick="filtrarEmpresas('Supermercado e Mercearia', this)"><i class="fa-solid fa-cart-shopping"></i> Mercado</div>
+            <div class="pill" onclick="filtrarEmpresas('Prestação de Serviços', this)"><i class="fa-solid fa-wrench"></i> Serviços</div>
+            <div class="pill" onclick="filtrarEmpresas('Alimentação e Restaurantes', this)"><i class="fa-solid fa-burger"></i> Alimentação</div>
+            <div class="pill" onclick="filtrarEmpresas('Automotivo e Mecânica', this)"><i class="fa-solid fa-car"></i> Automotivo</div>
+        </div>
+
+        <div class="premium-banner">
+            <div class="badge-star"><i class="fa-solid fa-star"></i> DESTAQUE PREMIUM</div>
+            <h2>Anuncie Aqui</h2>
+            <p>Sua empresa no topo para toda a cidade!</p>
+            <button style="background:white; color:var(--blue-primary); padding:8px 16px; border-radius:8px; border:none; font-weight:700; width:fit-content;">Saiba mais</button>
+            <img src="https://i.imgur.com/8Q3Q5Gg.png" class="img-doctor-banner">
+        </div>
+
+        <div class="section-header"><h3 id="titulo-lista-empresas">Empresas Cadastradas</h3></div>
+        <div id="lista-empresas-categorias" style="padding: 0 20px; display:flex; flex-direction:column; gap:15px;"></div>
+    </div>
+
+    <div id="aba-perfil" class="tab-content">
+        
+        <div id="gerenciador-perfis">
+            <div class="top-bar"><div class="location">Gerenciador de Perfis</div></div>
+            <button class="btn-perfil-acao" onclick="abrirCriarPerfil()" style="color: var(--blue-primary); border-color: var(--blue-primary); text-align: center; margin-top: 10px;">
+                <i class="fa-solid fa-user-plus"></i> CRIAR NOVO PERFIL
             </button>
+            <button class="btn-perfil-acao" onclick="abrirModal('modal-banner')"><i class="fa-solid fa-image"></i> Subir Banner Global</button>
+            <div id="lista-usuarios-teste"></div>
+        </div>
+
+        <div id="layout-visual-perfil">
+            <div class="perfil-v-top-bar">
+                <button class="btn-v-back" onclick="logoutSimulado()"><i class="fa-solid fa-arrow-left"></i></button>
+                <h1 class="perfil-v-title">Meu Perfil</h1>
+                <button class="btn-v-config" onclick="editarPerfilAtual()"><i class="fa-solid fa-pen-to-square"></i></button>
+            </div>
+            <div class="perfil-v-user-area"><img id="v-user-avatar" src="" class="photo-v-img">
+                <div class="perfil-v-user-info"><h2 id="v-user-name" class="user-v-name">...</h2><p class="user-v-welcome">Bem-vindo de volta! 👋</p></div>
+            </div>
+            <div class="box-v-empresa" id="v-box-empresa" onclick="editarPerfilAtual()">
+                <div class="empresa-v-left"><i class="fa-solid fa-building empresa-v-icon"></i>
+                    <div class="empresa-v-text"><h4 id="v-box-titulo">Minha empresa</h4><p id="v-box-desc">...</p></div>
+                </div>
+                <button class="btn-v-cadastrar-empresa">Editar Empresa</button>
+            </div>
+            <div class="list-v-links">
+                <div class="list-v-link-item" onclick="editarPerfilAtual()"><div class="link-v-left"><i class="fa-solid fa-location-dot link-v-icon"></i><div class="link-v-texts"><h5>Endereço</h5><p id="v-endereco-text">...</p></div></div></div>
+                <div class="list-v-link-item" onclick="logoutSimulado()" style="margin-top:20px;"><div class="link-v-left"><i class="fa-solid fa-right-from-bracket link-v-icon red"></i><div class="link-v-texts"><h5 style="color:var(--red-danger);">Trocar de Usuário</h5></div></div></div>
+            </div>
         </div>
     </div>
 
-    <!-- ================= MODAIS ================= -->
-    <div class="modal-overlay" id="fundo-modal" onclick="fecharModais()"></div>
-
-    <!-- Modal Novo Pedido -->
-    <div class="modal-content" id="modal-pedido">
-        <div class="modal-header"><h2>Nova Publicação</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
-        <form id="form-pedido">
-            <div class="form-group"><label>O que você precisa?</label><input type="text" id="pedido-titulo" placeholder="Ex: Preciso de um pintor" required></div>
-            <div class="form-group"><label>Descrição / Detalhes</label><input type="text" id="pedido-desc" placeholder="Detalhes do serviço..." required></div>
-            <div class="form-group">
-                <label>Tipo de Publicação</label>
-                <select id="pedido-tipo">
-                    <option value="servico">Preciso de serviço</option>
-                    <option value="emprego">Vaga de emprego</option>
-                </select>
+    <div id="tela-empresa" class="tela-perfil-empresa">
+        <div class="empresa-header"><img id="overlay-banner" src="" class="empresa-cover"><button class="btn-back-circle" onclick="fecharPerfilEmpresa()"><i class="fa-solid fa-arrow-left"></i></button></div>
+        <div class="empresa-logo-box"><div class="empresa-logo-circle"><img id="overlay-avatar" src=""></div></div>
+        <div style="padding:0 20px;">
+            <h1 id="overlay-nome" style="font-size:1.6rem; font-weight:800;">Nome <i class="fa-solid fa-circle-check" style="color:#10B981;"></i></h1>
+            <p id="overlay-arroba" style="color:var(--text-muted); margin-bottom:15px;">@arroba</p>
+            <a id="overlay-btn-wpp" href="#" target="_blank" style="text-decoration:none;"><div class="btn-whatsapp-big"><div style="text-align:left; line-height:1.2;"><strong>Chamar no WhatsApp</strong><br><span style="font-size:0.8rem; opacity:0.9;">Resposta rápida</span></div><i class="fa-brands fa-whatsapp" style="font-size:1.8rem;"></i></div></a>
+            <div class="actions-grid">
+                <div class="action-card"><i class="fa-solid fa-location-dot"></i><span id="overlay-loc">...</span></div>
+                <div class="action-card"><i class="fa-brands fa-instagram" style="color:#d6249f;"></i><span id="overlay-ig">...</span></div>
             </div>
+            <h3 style="margin-bottom:10px;">Sobre e Serviços</h3><p id="overlay-desc" style="line-height:1.5; color:var(--text-main); font-size:0.9rem;">...</p>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="fundo-modal" onclick="fecharModais()"></div>
+    <div class="modal-content" id="modal-novo-perfil">
+        <div class="modal-header"><h2 id="modal-perfil-title">Criar Perfil</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <form id="form-novo-perfil">
+            <input type="hidden" id="perfil-id-edicao"> 
+            <div class="form-group"><label>Nome / Empresa</label><input type="text" id="perfil-nome" required></div>
+            <div class="form-group"><label>@ Usuário</label><input type="text" id="perfil-arroba" required></div>
+            <div class="form-group"><label>Foto (Opcional)</label><div class="file-box"><i class="fa-solid fa-camera"></i> <span id="txt-foto">Escolher</span><input type="file" id="perfil-foto" accept="image/*"></div></div>
+            <div class="form-group"><label>Tipo de Conta</label><select id="perfil-tipo" required><option value="fisica">Pessoa Física</option><option value="empresa">Empresa</option></select></div>
+            <div id="campos-extras-empresa">
+                <div class="form-group"><label>Categoria</label><select id="perfil-cat">
+                    <option value="Médicos e Saúde">Médicos e Saúde</option>
+                    <option value="Supermercado e Mercearia">Supermercado e Mercearia</option>
+                    <option value="Alimentação e Restaurantes">Alimentação e Restaurantes</option>
+                    <option value="Automotivo e Mecânica">Automotivo e Mecânica</option>
+                    <option value="Beleza e Estética">Beleza e Estética</option>
+                    <option value="Construção e Reforma">Construção e Reforma</option>
+                    <option value="Prestação de Serviços">Prestação de Serviços</option>
+                    <option value="Distribuidora de Bebidas">Distribuidora de Bebidas</option>
+                    <option value="Moda e Vestuário">Moda e Vestuário</option>
+                    <option value="Padaria e Confeitaria">Padaria e Confeitaria</option>
+                    <option value="Pet Shop e Veterinária">Pet Shop e Veterinária</option>
+                    <option value="Tecnologia e Informática">Tecnologia e Informática</option>
+                    <option value="Outros">Outros</option>
+                </select></div>
+                <div class="form-group"><label>Capa/Banner</label><div class="file-box"><i class="fa-regular fa-image"></i> <span id="txt-banner">Escolher</span><input type="file" id="perfil-banner" accept="image/*"></div></div>
+                <div class="form-group"><label>Whats (64...)</label><input type="text" id="perfil-whats"></div>
+                <div class="form-group"><label>Insta (@...)</label><input type="text" id="perfil-insta"></div>
+                <div class="form-group"><label>Localização</label><input type="text" id="perfil-loc"></div>
+                <div class="form-group"><label>Serviços</label><input type="text" id="perfil-servicos"></div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <button type="button" id="btn-deletar-perfil" class="btn-submit" style="background:var(--red-danger); display:none; flex:1;" onclick="deletarPerfilAtual()">Excluir</button>
+                <button type="submit" class="btn-submit" id="btn-perfil-submit" style="flex:2;">Salvar</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="modal-content" id="modal-pedido">
+        <div class="modal-header"><h2>Publicar</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <form id="form-pedido">
+            <div class="form-group"><label>Título</label><input type="text" id="pedido-titulo" required></div>
+            <div class="form-group"><label>Descrição</label><input type="text" id="pedido-desc" required></div>
+            <div class="form-group"><label>Tipo</label><select id="pedido-tipo"><option value="servico">Pedido</option><option value="emprego">Vaga</option></select></div>
             <button type="submit" class="btn-submit">Publicar Agora</button>
         </form>
     </div>
 
-    <!-- Modal Banner -->
     <div class="modal-content" id="modal-banner">
-        <div class="modal-header"><h2>Subir Banner para o Carrossel</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <div class="modal-header"><h2>Banner Global</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
         <form id="form-banner">
-            <div class="file-box">
-                <i class="fa-solid fa-cloud-arrow-up"></i><br>
-                <span id="txt-arquivo">Clique para escolher imagem</span>
-                <input type="file" id="arquivo-img" accept="image/*" required onchange="document.getElementById('txt-arquivo').innerText = this.files[0].name">
-            </div>
-            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 10px;">A imagem vai rodar automaticamente a cada 5 segundos no topo da tela inicial.</p>
-            <button type="submit" class="btn-submit" id="btn-up-banner">Publicar Banner</button>
+            <div class="file-box"><i class="fa-solid fa-cloud-arrow-up"></i><br><span>Selecionar Foto</span><input type="file" id="arquivo-img" accept="image/*"></div>
+            <button type="submit" class="btn-submit" id="btn-up-banner">Publicar</button>
         </form>
     </div>
 
-    <!-- NAV INFERIOR -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="mudarAba('aba-inicio', this)">
-            <i class="fa-solid fa-house"></i>
-            <span>Início</span>
-        </div>
-        <div class="nav-item" onclick="mudarAba('aba-categorias', this)">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:2px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
-            <span>Categorias</span>
-        </div>
-        <div class="nav-item" onclick="mudarAba('aba-perfil', this)">
-            <i class="fa-regular fa-user"></i>
-            <span>Perfil</span>
-        </div>
+        <div class="nav-item active" onclick="mudarAba('aba-inicio', this)"><i class="fa-solid fa-house"></i><span>Início</span></div>
+        <div class="nav-item" onclick="mudarAba('aba-categorias', this)"><i class="fa-solid fa-grip-vertical"></i><span>Categorias</span></div>
+        <div class="nav-item" onclick="mudarAba('aba-perfil', this)"><i class="fa-regular fa-user"></i><span>Perfil</span></div>
     </nav>
 
-    <!-- FIREBASE & JS -->
     <script type="module">
         import { initializeApp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-app.js";
-        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
+        import { getFirestore, collection, addDoc, onSnapshot, query, orderBy, limit, serverTimestamp, doc, getDoc, updateDoc, deleteDoc } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore.js";
         import { getStorage, ref, uploadBytes, getDownloadURL } from "https://www.gstatic.com/firebasejs/10.11.0/firebase-storage.js";
 
-        const firebaseConfig = {
-            apiKey: "AIzaSyAhEjVEw0fWVZxH22EehGx0KTWc-njBUkc",
-            authDomain: "app-da-cidade-392b6.firebaseapp.com",
-            projectId: "app-da-cidade-392b6",
-            storageBucket: "app-da-cidade-392b6.firebasestorage.app",
-            messagingSenderId: "822879561598",
-            appId: "1:822879561598:web:98f6f99de0c637562b352f",
-            measurementId: "G-F0JNWT1CK7"
-        };
+        const firebaseConfig = { apiKey: "AIzaSyAhEjVEw0fWVZxH22EehGx0KTWc-njBUkc", authDomain: "app-da-cidade-392b6.firebaseapp.com", projectId: "app-da-cidade-392b6", storageBucket: "app-da-cidade-392b6.firebasestorage.app", messagingSenderId: "822879561598", appId: "1:822879561598:web:98f6f99de0c637562b352f" };
+        const app = initializeApp(firebaseConfig); const db = getFirestore(app); const storage = getStorage(app);
 
-        const app = initializeApp(firebaseConfig);
-        const db = getFirestore(app);
-        const storage = getStorage(app);
-
-        // Funções UI
-        window.mudarAba = (idAba, el) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById(idAba).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); };
+        // FUNÇÕES UI GERAIS
+        window.mudarAba = (id, el) => { document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active')); document.getElementById(id).classList.add('active'); document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active')); el.classList.add('active'); };
         window.abrirModal = (id) => { document.getElementById('fundo-modal').classList.add('active'); document.getElementById(id).classList.add('active'); };
         window.fecharModais = () => { document.getElementById('fundo-modal').classList.remove('active'); document.querySelectorAll('.modal-content').forEach(m => m.classList.remove('active')); };
+        window.fecharPerfilEmpresa = () => { document.getElementById('tela-empresa').classList.remove('active'); };
 
-        // LÓGICA DO CARROSSEL DE BANNERS
-        let carrosselInterval;
-        let slideAtual = 0;
+        document.getElementById('perfil-tipo').addEventListener('change', function() {
+            document.getElementById('campos-extras-empresa').style.display = this.value === 'empresa' ? 'block' : 'none';
+        });
 
-        window.mudarSlide = (index) => {
-            const container = document.getElementById("banner-carousel");
-            const slides = container.querySelectorAll('.carousel-slide');
-            const dots = container.querySelectorAll('.dot');
-            if(slides.length === 0) return;
-            
-            slides.forEach(s => s.classList.remove('active'));
-            dots.forEach(d => d.classList.remove('active'));
-            
-            slides[index].classList.add('active');
-            dots[index].classList.add('active');
+        async function uploadFile(file, path) {
+            if (!file) return null;
+            const sRef = ref(storage, path + '/' + Date.now() + '_' + file.name);
+            await uploadBytes(sRef, file);
+            return await getDownloadURL(sRef);
+        }
+
+        // ================= LÓGICA DE USUÁRIO E FILTRO =================
+        let activeProfileId = localStorage.getItem('activeAppProfileId');
+        let activeProfileData = null; 
+        let todasEmpresas = [];
+        let categoriaAtiva = 'Todas';
+
+        window.filtrarEmpresas = (cat, el) => {
+            categoriaAtiva = cat;
+            document.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            renderizarEmpresasFiltradas();
         };
 
-        // Puxa os 3 últimos banners do banco
-        onSnapshot(query(collection(db, "banners"), orderBy("timestamp", "desc"), limit(3)), (snap) => {
-            const container = document.getElementById("banner-carousel");
-            const slidesDiv = document.getElementById("carousel-slides");
-            const dotsDiv = document.getElementById("carousel-dots");
+        function renderizarEmpresasFiltradas() {
+            const containerCats = document.getElementById("lista-empresas-categorias");
+            const titulo = document.getElementById("titulo-lista-empresas");
+            containerCats.innerHTML = "";
+            
+            const filtradas = categoriaAtiva === 'Todas' 
+                ? todasEmpresas 
+                : todasEmpresas.filter(e => e.categoria === categoriaAtiva);
 
-            if (snap.empty) {
-                container.style.display = "none";
+            titulo.innerText = categoriaAtiva === 'Todas' ? 'Empresas Cadastradas' : `Empresas em ${categoriaAtiva}`;
+
+            if (filtradas.length === 0) {
+                containerCats.innerHTML = `<div style="text-align:center; padding:20px; color:var(--text-muted);">Nenhuma empresa nesta categoria ainda.</div>`;
                 return;
             }
 
-            container.style.display = "block";
-            slidesDiv.innerHTML = "";
-            dotsDiv.innerHTML = "";
-            
-            let bannersCount = 0;
-            snap.forEach((doc) => {
-                const url = doc.data().url;
-                const isActive = bannersCount === 0 ? "active" : "";
-                
-                slidesDiv.innerHTML += `<div class="carousel-slide ${isActive}"><img src="${url}"></div>`;
-                dotsDiv.innerHTML += `<div class="dot ${isActive}"></div>`;
-                bannersCount++;
-            });
-
-            clearInterval(carrosselInterval);
-            slideAtual = 0;
-            if(bannersCount > 1) {
-                carrosselInterval = setInterval(() => {
-                    slideAtual = (slideAtual + 1) % bannersCount;
-                    mudarSlide(slideAtual);
-                }, 5000);
-            }
-        });
-
-        // LER PEDIDOS DO FIREBASE (INSERE ACIMA DOS EXEMPLOS)
-        onSnapshot(query(collection(db, "pedidos"), orderBy("timestamp", "desc")), (snap) => {
-            const container = document.getElementById("lista-pedidos-firebase");
-            container.innerHTML = ""; // Limpa só a parte dinâmica
-            
-            snap.forEach((doc) => {
-                const d = doc.data();
-                
-                const badgeClass = d.tipo === 'emprego' ? 'badge-job' : 'badge-service';
-                const badgeText = d.tipo === 'emprego' ? 'Vaga de emprego' : 'Preciso de serviço';
-                const tagIcon = d.tipo === 'emprego' ? 'fa-briefcase' : 'fa-handshake';
-                const tagText = d.tipo === 'emprego' ? 'Emprego' : 'Serviço';
-
-                container.innerHTML += `
-                    <div class="feed-card" style="animation: fadeIn 0.5s;">
-                        <div class="card-header">
-                            <img src="https://ui-avatars.com/api/?name=Eliel&background=2563EB&color=fff&rounded=true" class="avatar-img">
-                            <div class="user-info">
-                                <div class="name-row">
-                                    <span class="name">Eliel</span>
-                                    <span class="time"><i class="fa-regular fa-clock"></i> novo</span>
-                                </div>
-                                <div class="type-row">
-                                    <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
-                                    <span class="${badgeClass}">${badgeText}</span>
-                                </div>
-                            </div>
+            filtradas.forEach(u => {
+                const dataString = encodeURIComponent(JSON.stringify(u));
+                containerCats.innerHTML += `
+                    <div class="pro-card-premium" onclick="abrirEmpresaOverlay('${dataString}')" style="cursor:pointer; margin:0 0 15px 0;">
+                        <img src="${u.avatarUrl}" class="avatar-img" style="width:60px; height:60px; border-radius:50%; object-fit:cover;">
+                        <div class="pro-info">
+                            <div class="pro-name">${u.nome}</div><div class="pro-spec">${u.categoria || 'Serviços'}</div>
                         </div>
-                        <h4 class="card-title">${d.titulo}</h4>
-                        <p class="card-desc">${d.descricao || 'Sem descrição.'}</p>
-                        <div class="card-tags">
-                            <span class="tag"><i class="fa-solid ${tagIcon}"></i> ${tagText}</span>
-                        </div>
-                        <div class="card-footer">
-                            <i class="fa-solid fa-location-dot"></i> Pontalina, GO
-                        </div>
-                        <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                        <div class="pro-actions"><button class="btn-zap-small"><i class="fa-brands fa-whatsapp"></i> Ver Perfil</button></div>
                     </div>
                 `;
             });
-        });
+        }
 
-        // SALVAR NOVO PEDIDO
-        document.getElementById("form-pedido").onsubmit = async (e) => {
-            e.preventDefault();
-            await addDoc(collection(db, "pedidos"), { 
-                titulo: document.getElementById("pedido-titulo").value, 
-                descricao: document.getElementById("pedido-desc").value, 
-                tipo: document.getElementById("pedido-tipo").value,
-                timestamp: serverTimestamp() 
-            });
-            e.target.reset(); fecharModais();
+        function atualizarAbaPerfilSPA() {
+            if (activeProfileId) {
+                document.getElementById('gerenciador-perfis').classList.add('hidden');
+                document.getElementById('layout-visual-perfil').classList.add('active');
+            } else {
+                document.getElementById('gerenciador-perfis').classList.remove('hidden');
+                document.getElementById('layout-visual-perfil').classList.remove('active');
+            }
+        }
+        atualizarAbaPerfilSPA();
+
+        function atualizarDadosUsuarioLogado(data) {
+            document.getElementById('v-user-name').innerText = data.nome;
+            document.getElementById('v-user-avatar').src = data.avatarUrl || `https://ui-avatars.com/api/?name=${data.nome}&background=${data.color}&color=fff&size=150`;
+            document.getElementById('v-endereco-text').innerText = data.localizacao || "Endereço não cadastrado";
+            document.getElementById('v-box-titulo').innerText = data.tipo === 'empresa' ? data.nome : "Minha empresa";
+            document.getElementById('v-box-desc').innerText = data.tipo === 'empresa' ? (data.servicos || "Dados cadastrados") : "Cadastre sua empresa aqui.";
+        }
+
+        let perfilEmEdicaoId = null;
+
+        window.abrirCriarPerfil = () => {
+            perfilEmEdicaoId = null; 
+            document.getElementById("form-novo-perfil").reset();
+            document.getElementById('campos-extras-empresa').style.display = 'none'; 
+            document.getElementById("modal-perfil-title").innerText = "Criar Perfil";
+            document.getElementById('btn-deletar-perfil').style.display = 'none';
+            abrirModal('modal-novo-perfil');
         };
 
-        // SALVAR BANNER
-        document.getElementById("form-banner").onsubmit = async (e) => {
-            e.preventDefault();
-            const btn = document.getElementById("btn-up-banner");
-            btn.innerText = "Enviando..."; btn.disabled = true;
-            const file = document.getElementById("arquivo-img").files[0];
+        window.abrirEditarPerfil = async (id) => {
+            if(event) event.stopPropagation(); 
+            perfilEmEdicaoId = id; 
+            document.getElementById("modal-perfil-title").innerText = "Editar Perfil";
+            document.getElementById('btn-deletar-perfil').style.display = 'block';
             try {
-                const sRef = ref(storage, 'banners/' + Date.now());
-                await uploadBytes(sRef, file);
-                const url = await getDownloadURL(sRef);
-                await addDoc(collection(db, "banners"), { url, timestamp: serverTimestamp() });
-                fecharModais(); alert("Banner adicionado ao carrossel!");
-            } catch (err) { alert("Erro ao subir banner."); }
-            btn.innerText = "Publicar Banner"; btn.disabled = false;
+                const docSnap = await getDoc(doc(db, "usuarios_teste", id));
+                if (docSnap.exists()) {
+                    const d = docSnap.data();
+                    document.getElementById('perfil-nome').value = d.nome;
+                    document.getElementById('perfil-arroba').value = d.arroba;
+                    document.getElementById('perfil-tipo').value = d.tipo;
+                    if (d.tipo === 'empresa') {
+                        document.getElementById('campos-extras-empresa').style.display = 'block';
+                        document.getElementById('perfil-cat').value = d.categoria || "Outros";
+                        document.getElementById('perfil-whats').value = d.whatsapp || "";
+                        document.getElementById('perfil-insta').value = d.instagram || "";
+                        document.getElementById('perfil-loc').value = d.localizacao || "";
+                        document.getElementById('perfil-servicos').value = d.servicos || "";
+                    }
+                    abrirModal('modal-novo-perfil');
+                }
+            } catch (e) { alert("Erro ao buscar dados."); }
+        };
+
+        window.editarPerfilAtual = () => { if(activeProfileId) abrirEditarPerfil(activeProfileId); };
+
+        window.deletarPerfilAtual = async () => {
+            if(!perfilEmEdicaoId) return;
+            if(confirm("Deseja apagar este perfil?")) {
+                await deleteDoc(doc(db, "usuarios_teste", perfilEmEdicaoId));
+                if(activeProfileId === perfilEmEdicaoId) logoutSimulado();
+                fecharModais();
+            }
+        };
+
+        window.selecionarPerfil = (id, dataString) => {
+            const data = JSON.parse(decodeURIComponent(dataString));
+            activeProfileId = id;
+            activeProfileData = { id, ...data };
+            localStorage.setItem('activeAppProfileId', id);
+            atualizarAbaPerfilSPA(); 
+            atualizarDadosUsuarioLogado(activeProfileData); 
+        };
+
+        window.logoutSimulado = () => {
+            activeProfileId = null; activeProfileData = null;
+            localStorage.removeItem('activeAppProfileId');
+            atualizarAbaPerfilSPA(); 
+        };
+
+        document.getElementById("form-novo-perfil").onsubmit = async (e) => {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]'); btn.innerText = "Salvando...";
+            const d = {
+                nome: document.getElementById('perfil-nome').value, arroba: document.getElementById('perfil-arroba').value,
+                tipo: document.getElementById('perfil-tipo').value, color: document.getElementById('perfil-tipo').value === 'empresa' ? '111' : '2563EB',
+                categoria: document.getElementById('perfil-cat').value, whatsapp: document.getElementById('perfil-whats').value,
+                instagram: document.getElementById('perfil-insta').value, localizacao: document.getElementById('perfil-loc').value, servicos: document.getElementById('perfil-servicos').value
+            };
+            const fP = document.getElementById('perfil-foto').files[0];
+            const fB = document.getElementById('perfil-banner').files[0];
+            if(fP) d.avatarUrl = await uploadFile(fP, 'avatars');
+            if(fB) d.bannerUrl = await uploadFile(fB, 'capas');
+            if(!d.avatarUrl && !perfilEmEdicaoId) d.avatarUrl = `https://ui-avatars.com/api/?name=${d.nome}&background=${d.color}&color=fff`;
+
+            try {
+                if (perfilEmEdicaoId) {
+                    await updateDoc(doc(db, "usuarios_teste", perfilEmEdicaoId), d);
+                    if (activeProfileId === perfilEmEdicaoId) { activeProfileData = { id: perfilEmEdicaoId, ...d }; atualizarDadosUsuarioLogado(activeProfileData); }
+                } else {
+                    d.timestamp = serverTimestamp();
+                    const docRef = await addDoc(collection(db, "usuarios_teste"), d);
+                    window.selecionarPerfil(docRef.id, encodeURIComponent(JSON.stringify(d)));
+                }
+                fecharModais();
+            } catch (error) { alert("Erro ao salvar."); }
+            btn.innerText = "Salvar";
+        };
+
+        onSnapshot(query(collection(db, "usuarios_teste"), orderBy("timestamp", "desc")), (snap) => {
+            todasEmpresas = [];
+            const containerSel = document.getElementById("lista-usuarios-teste");
+            containerSel.innerHTML = "";
+            snap.forEach(doc => {
+                const u = { id: doc.id, ...doc.data() };
+                const dataString = encodeURIComponent(JSON.stringify(u));
+                if(u.id === activeProfileId) { activeProfileData = u; atualizarDadosUsuarioLogado(u); }
+                if(u.tipo === 'empresa') todasEmpresas.push(u);
+
+                containerSel.innerHTML += `
+                    <div id="card-user-${u.id}" class="card-perfil-teste ${u.id === activeProfileId ? 'active' : ''}">
+                        <img src="${u.avatarUrl}" class="p-avatar" onclick="selecionarPerfil('${u.id}', '${dataString}')">
+                        <div class="p-info" onclick="selecionarPerfil('${u.id}', '${dataString}')"><div class="p-nome">${u.nome}</div><div class="p-arroba">${u.arroba}</div></div>
+                        <i class="fa-solid fa-pen-to-square p-edit" onclick="abrirEditarPerfil('${u.id}')"></i>
+                    </div>
+                `;
+            });
+            renderizarEmpresasFiltradas();
+        });
+
+        window.abrirEmpresaOverlay = (dataString) => {
+            const d = JSON.parse(decodeURIComponent(dataString));
+            document.getElementById('overlay-banner').src = d.bannerUrl || 'https://images.unsplash.com/photo-1578916171728-46686eac8d58?fit=crop&w=800&q=80';
+            document.getElementById('overlay-avatar').src = d.avatarUrl;
+            document.getElementById('overlay-nome').innerHTML = `${d.nome} <i class="fa-solid fa-circle-check" style="color:#10B981;"></i>`;
+            document.getElementById('overlay-arroba').innerText = d.arroba;
+            document.getElementById('overlay-loc').innerText = d.localizacao || "Consulte";
+            document.getElementById('overlay-ig').innerText = d.instagram || "Consulte";
+            document.getElementById('overlay-desc').innerText = d.servicos || "Dados da empresa cadastrados.";
+            document.getElementById('overlay-btn-wpp').href = d.whatsapp ? `https://wa.me/55${d.whatsapp.replace(/\D/g,'')}` : '#';
+            document.getElementById('tela-empresa').classList.add('active');
+        };
+
+        // CARROSSEL E PEDIDOS
+        let slideAtual = 0;
+        onSnapshot(query(collection(db, "banners"), orderBy("timestamp", "desc"), limit(3)), (snap) => {
+            const container = document.getElementById("banner-carousel"); const slidesDiv = document.getElementById("carousel-slides"); const dotsDiv = document.getElementById("carousel-dots");
+            if (snap.empty) return; container.style.display = "block"; slidesDiv.innerHTML = ""; dotsDiv.innerHTML = "";
+            let count = 0;
+            snap.forEach(doc => { const url = doc.data().url; slidesDiv.innerHTML += `<div class="carousel-slide ${count === 0 ? "active" : ""}"><img src="${url}"></div>`; dotsDiv.innerHTML += `<div class="dot ${count === 0 ? "active" : ""}"></div>`; count++; });
+            setInterval(() => {
+                const slides = document.querySelectorAll('.carousel-slide'); const dots = document.querySelectorAll('.dot');
+                if(slides.length <= 1) return;
+                slides[slideAtual].classList.remove('active'); dots[slideAtual].classList.remove('active');
+                slideAtual = (slideAtual + 1) % slides.length;
+                slides[slideAtual].classList.add('active'); dots[slideAtual].classList.add('active');
+            }, 5000);
+        });
+
+        onSnapshot(query(collection(db, "pedidos"), orderBy("timestamp", "desc")), (snap) => {
+            const container = document.getElementById("lista-pedidos-firebase"); container.innerHTML = "";
+            snap.forEach(doc => {
+                const d = doc.data(); const badge = d.tipoPost === 'emprego' ? 'badge-job' : 'badge-service';
+                const avatarHTML = `<img src="${d.autorAvatar}" class="avatar-img" style="border-radius:${d.autorTipo === 'empresa' ? '12px' : '50%'}">`;
+                container.innerHTML += `<div class="feed-card" ${d.autorTipo === 'empresa' && d.autorDataFull ? `onclick="abrirEmpresaOverlay('${d.autorDataFull}')"` : ''}><div class="card-header">${avatarHTML}<div class="user-info"><span class="name">${d.autorNome} <i class="fa-solid fa-circle-check" style="color:#2563EB; font-size:0.8rem;"></i></span></div><span class="${badge}">${d.tipoPost === 'emprego' ? 'Vaga' : 'Pedido'}</span></div><h4 class="card-title">${d.titulo}</h4><p class="card-desc">${d.descricao}</p></div>`;
+            });
+        });
+
+        document.getElementById("form-pedido").onsubmit = async (e) => {
+            e.preventDefault(); const btn = e.target.querySelector('button'); btn.innerText = "Postando...";
+            if (!activeProfileData) { alert("Entre em um perfil!"); fecharModais(); btn.innerText = "Publicar Agora"; return; }
+            await addDoc(collection(db, "pedidos"), { titulo: document.getElementById('pedido-titulo').value, descricao: document.getElementById('pedido-desc').value, tipoPost: document.getElementById('pedido-tipo').value, autorNome: activeProfileData.nome, autorTipo: activeProfileData.tipo, autorAvatar: activeProfileData.avatarUrl, autorDataFull: encodeURIComponent(JSON.stringify(activeProfileData)), timestamp: serverTimestamp() });
+            fecharModais(); btn.innerText = "Publicar Agora";
+        };
+
+        document.getElementById("form-banner").onsubmit = async (e) => {
+            e.preventDefault(); const btn = document.getElementById("btn-up-banner"); btn.innerText = "Subindo...";
+            const file = document.getElementById("arquivo-img").files[0];
+            const url = await uploadFile(file, 'banners');
+            await addDoc(collection(db, "banners"), { url, timestamp: serverTimestamp() });
+            fecharModais(); btn.innerText = "Publicar";
         };
     </script>
 </body>
