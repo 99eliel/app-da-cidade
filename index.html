@@ -29,8 +29,12 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
 
-        /* --- HEADER --- */
-        .top-bar { display: flex; justify-content: space-between; align-items: center; padding: 20px 20px 10px 20px; background-color: white; position: sticky; top: 0; z-index: 100; }
+        /* --- HEADER NOVO DESIGN --- */
+        .top-bar {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 20px 20px 10px 20px; background-color: white;
+            position: sticky; top: 0; z-index: 100;
+        }
         .location { font-size: 1rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 6px; }
         .location i.fa-location-dot { color: var(--blue-primary); font-size: 1.1rem; }
         .location i.fa-chevron-down { font-size: 0.8rem; color: var(--text-main); }
@@ -43,49 +47,32 @@
         .search-container input { border: none; background: transparent; outline: none; width: 100%; font-size: 1rem; color: var(--text-main); }
         .search-container i { color: var(--text-muted); font-size: 1.1rem; }
 
-        /* --- CARROSSEL DE BANNERS (NOVO) --- */
+        /* --- CARROSSEL DE BANNERS --- */
         .carousel-container {
-            position: relative;
-            margin: 0 20px 15px 20px;
-            height: 145px;
-            border-radius: 16px;
-            overflow: hidden;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-            display: none; /* Ativado via JS quando houver imagens */
+            position: relative; margin: 0 20px 15px 20px; height: 145px;
+            border-radius: 16px; overflow: hidden; display: none;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); background-color: #F3F4F6;
         }
         .carousel-slide {
-            position: absolute;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            opacity: 0;
-            transition: opacity 0.6s ease-in-out;
-            z-index: 1;
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            opacity: 0; transition: opacity 0.6s ease-in-out; z-index: 1;
         }
         .carousel-slide.active { opacity: 1; z-index: 2; }
-        .carousel-slide img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover; /* Faz a imagem preencher 100% do espaço sem deformar */
-        }
+        .carousel-slide img { width: 100%; height: 100%; object-fit: cover; }
         .carousel-dots {
-            position: absolute;
-            bottom: 12px;
-            left: 0; right: 0;
-            display: flex;
-            justify-content: center;
-            gap: 6px;
-            z-index: 3;
+            position: absolute; bottom: 10px; left: 0; right: 0;
+            display: flex; justify-content: center; gap: 6px; z-index: 3;
         }
-        .dot {
-            width: 7px; height: 7px;
-            border-radius: 50%;
-            background-color: rgba(255, 255, 255, 0.5);
-            transition: background-color 0.3s;
-        }
+        .dot { width: 7px; height: 7px; border-radius: 50%; background-color: rgba(255, 255, 255, 0.5); transition: background-color 0.3s; }
         .dot.active { background-color: white; box-shadow: 0 0 2px rgba(0,0,0,0.5); }
 
         /* BOTÃO AÇÃO PRINCIPAL */
-        .btn-acao-principal { display: flex; align-items: center; justify-content: center; gap: 8px; width: calc(100% - 40px); margin: 0 auto 20px auto; background-color: var(--blue-primary); color: white; padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer; }
+        .btn-acao-principal {
+            display: flex; align-items: center; justify-content: center; gap: 8px;
+            width: calc(100% - 40px); margin: 0 auto 20px auto;
+            background-color: var(--blue-primary); color: white;
+            padding: 16px; border-radius: 12px; font-weight: 700; border: none; font-size: 1rem; cursor: pointer;
+        }
         .btn-acao-principal i { font-size: 1.2rem; }
 
         /* TÍTULO SEÇÃO */
@@ -93,27 +80,37 @@
         .section-header h3 { font-size: 1.1rem; font-weight: 700; color: var(--text-main); }
         .section-header a { font-size: 0.9rem; font-weight: 600; color: var(--blue-primary); text-decoration: none; }
 
-        /* LISTA DE POSTS */
-        .lista-container { padding: 0 20px; display: flex; flex-direction: column; gap: 15px; }
+        /* LISTA E CARDS (DESIGN EXATO DA FOTO) */
+        .lista-wrapper { padding: 0 20px; display: flex; flex-direction: column; gap: 15px; }
+        
         .feed-card { border: 1px solid var(--border-color); border-radius: 16px; padding: 16px; background-color: white; position: relative; box-shadow: 0 2px 6px rgba(0,0,0,0.02); }
         .card-header { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 12px; }
         .avatar-img { width: 50px; height: 50px; border-radius: 50%; object-fit: cover; background-color: #F3F4F6; }
+        
+        /* Avatar especial Construtora */
+        .avatar-empresa { width: 50px; height: 50px; border-radius: 50%; background-color: #111; color: #FFC107; display: flex; flex-direction: column; align-items: center; justify-content: center; font-size: 0.6rem; font-weight: 700; text-align: center; line-height: 1.1; }
+        .avatar-empresa i { font-size: 1.2rem; margin-bottom: 2px; }
+
         .user-info { flex: 1; }
         .name-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px; }
         .name { font-size: 0.95rem; font-weight: 700; color: var(--text-main); display: flex; align-items: center; gap: 4px; }
+        .name i.fa-circle-check { color: var(--blue-primary); font-size: 0.85rem; }
         .time { font-size: 0.75rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
         .type-row { display: flex; justify-content: space-between; align-items: center; }
         .type-user { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
         .type-user i { color: var(--blue-primary); }
-        
+        .type-user i.fa-building { color: #10B981; }
+
         .badge-service { background-color: var(--blue-light); color: var(--blue-primary); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
         .badge-job { background-color: var(--green-badge-bg); color: var(--green-badge-text); font-size: 0.7rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; }
 
         .card-title { font-size: 1rem; font-weight: 700; color: var(--text-main); margin-bottom: 6px; }
         .card-desc { font-size: 0.85rem; line-height: 1.5; color: var(--text-main); margin-bottom: 12px; }
-        .card-tags { display: flex; gap: 8px; margin-bottom: 10px; }
+        .card-tags { display: flex; gap: 8px; margin-bottom: 10px; flex-wrap: wrap; }
         .tag { background-color: #F3F4F6; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; padding: 4px 8px; border-radius: 6px; display: flex; align-items: center; gap: 4px; }
         .card-footer { font-size: 0.8rem; color: var(--text-muted); display: flex; align-items: center; gap: 4px; }
+
         .btn-whatsapp { position: absolute; bottom: 16px; right: 16px; width: 45px; height: 45px; background-color: var(--green-whatsapp); color: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; text-decoration: none; box-shadow: 0 4px 10px rgba(37, 211, 102, 0.3); }
 
         /* NAV INFERIOR */
@@ -123,7 +120,7 @@
         .nav-item i { font-size: 1.4rem; }
 
         /* MODAIS */
-        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; opacity: 0; }
+        .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; z-index: 200; opacity: 0; transition: opacity 0.3s; }
         .modal-overlay.active { display: block; opacity: 1; }
         .modal-content { position: fixed; bottom: -100%; left: 0; width: 100%; background: white; border-top-left-radius: 20px; border-top-right-radius: 20px; padding: 25px 20px; z-index: 201; transition: bottom 0.3s cubic-bezier(0.1, 0.8, 0.3, 1); max-height: 90vh; overflow-y: auto; }
         .modal-content.active { bottom: 0; }
@@ -135,7 +132,10 @@
         .btn-submit { width: 100%; padding: 16px; border: none; border-radius: 10px; background-color: var(--blue-primary); color: white; font-size: 1rem; font-weight: 700; cursor: pointer; margin-top: 10px; }
         .file-box { border: 2px dashed var(--blue-primary); border-radius: 12px; padding: 20px; text-align: center; background: #f0f7ff; color: var(--blue-primary); font-weight: 600; cursor: pointer; position: relative; margin-bottom: 15px; }
         .file-box input { opacity: 0; position: absolute; width: 100%; height: 100%; top: 0; left: 0; cursor: pointer; }
-        .loading-text { text-align: center; color: var(--text-muted); padding: 20px; font-size: 0.9rem; width: 100%; }
+
+        /* Botão do Perfil */
+        .btn-perfil-acao { display: block; width: 100%; text-align: left; background: white; padding: 18px; border-radius: 12px; margin-bottom: 12px; border: 1px solid var(--border-color); cursor: pointer; font-weight: 600; font-size: 1rem; color: var(--text-main); box-shadow: 0 2px 4px rgba(0,0,0,0.02); }
+        .btn-perfil-acao i { color: var(--blue-primary); margin-right: 10px; width: 20px; text-align: center; }
     </style>
 </head>
 <body>
@@ -147,7 +147,10 @@
             <div class="location">
                 <i class="fa-solid fa-location-dot"></i> Pontalina, GO <i class="fa-solid fa-chevron-down"></i>
             </div>
-            <div class="notification"><i class="fa-regular fa-bell"></i><span class="badge">3</span></div>
+            <div class="notification">
+                <i class="fa-regular fa-bell"></i>
+                <span class="badge">3</span>
+            </div>
         </div>
 
         <div class="search-wrapper">
@@ -157,14 +160,10 @@
             </div>
         </div>
 
-        <!-- CARROSSEL DE BANNERS -->
+        <!-- CARROSSEL DE BANNERS AUTOMÁTICO -->
         <div id="banner-carousel" class="carousel-container">
-            <div id="carousel-slides">
-                <!-- Imagens injetadas via JS -->
-            </div>
-            <div id="carousel-dots" class="carousel-dots">
-                <!-- Pontos injetados via JS -->
-            </div>
+            <div id="carousel-slides" class="carousel-slides"></div>
+            <div id="carousel-dots" class="carousel-dots"></div>
         </div>
 
         <button class="btn-acao-principal" onclick="abrirModal('modal-pedido')">
@@ -176,24 +175,133 @@
             <a href="#">Ver todas</a>
         </div>
         
-        <div class="lista-container" id="lista-pedidos-dinamica">
-            <div class="loading-text">Carregando dados...</div>
+        <!-- WRAPPER DA LISTA: Junta os novos dados com os exemplos -->
+        <div class="lista-wrapper">
+            
+            <!-- 1. Espaço onde entram as publicações novas do Firebase -->
+            <div id="lista-pedidos-firebase" style="display: flex; flex-direction: column; gap: 15px;"></div>
+
+            <!-- 2. Os 3 Exemplos Fixos (iguais a foto) -->
+            <div id="lista-pedidos-exemplos" style="display: flex; flex-direction: column; gap: 15px;">
+                
+                <!-- Card 1: João Silva -->
+                <div class="feed-card">
+                    <div class="card-header">
+                        <img src="https://ui-avatars.com/api/?name=João+Silva&background=0D8ABC&color=fff&rounded=true" class="avatar-img">
+                        <div class="user-info">
+                            <div class="name-row">
+                                <span class="name">João Silva</span>
+                                <span class="time"><i class="fa-regular fa-clock"></i> há 15 min</span>
+                            </div>
+                            <div class="type-row">
+                                <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
+                                <span class="badge-service">Preciso de serviço</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Preciso de um pintor</h4>
+                    <p class="card-desc">Preciso de um pintor para fazer a pintura externa da minha casa. Serviço para começar essa semana. Pagamento à combinar.</p>
+                    <div class="card-tags">
+                        <span class="tag"><i class="fa-solid fa-paint-roller"></i> Pintor</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                    </div>
+                    <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+
+                <!-- Card 2: Construtora -->
+                <div class="feed-card">
+                    <div class="card-header">
+                        <div class="avatar-empresa">
+                            <i class="fa-solid fa-house-chimney"></i>
+                            <span>CONSTRUTORA<br>OLIVEIRA</span>
+                        </div>
+                        <div class="user-info">
+                            <div class="name-row">
+                                <span class="name">Construtora Oliveira <i class="fa-solid fa-circle-check"></i></span>
+                                <span class="time"><i class="fa-regular fa-clock"></i> há 32 min</span>
+                            </div>
+                            <div class="type-row">
+                                <span class="type-user">Empresa <i class="fa-solid fa-building"></i></span>
+                                <span class="badge-job">Vaga de emprego</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Contrata-se funcionário</h4>
+                    <p class="card-desc">Contratamos ajudante de obra com experiência. Necessário ser responsável e ter disponibilidade para trabalho em equipe. Interessados, entrar em contato.</p>
+                    <div class="card-tags">
+                        <span class="tag"><i class="fa-solid fa-briefcase"></i> Emprego</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                    </div>
+                    <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+
+                <!-- Card 3: Maria -->
+                <div class="feed-card">
+                    <div class="card-header">
+                        <img src="https://ui-avatars.com/api/?name=Maria+Aparecida&background=F472B6&color=fff&rounded=true" class="avatar-img">
+                        <div class="user-info">
+                            <div class="name-row">
+                                <span class="name">Maria Aparecida</span>
+                                <span class="time"><i class="fa-regular fa-clock"></i> há 1 h</span>
+                            </div>
+                            <div class="type-row">
+                                <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
+                                <span class="badge-service">Preciso de serviço</span>
+                            </div>
+                        </div>
+                    </div>
+                    <h4 class="card-title">Preciso de faxineira</h4>
+                    <p class="card-desc">Preciso de uma faxineira para serviço semanal em casa. Preferência que tenha referência. Entrar em contato.</p>
+                    <div class="card-tags">
+                        <span class="tag"><i class="fa-solid fa-broom"></i> Faxineira</span>
+                    </div>
+                    <div class="card-footer">
+                        <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                    </div>
+                    <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
+                </div>
+
+            </div> <!-- Fim dos exemplos -->
         </div>
     </div>
 
-    <!-- ABAS PLACEHOLDERS -->
-    <div id="aba-categorias" class="tab-content"><div class="loading-text">Aba Categorias em construção...</div></div>
-    <div id="aba-perfil" class="tab-content"><div class="loading-text" style="margin-top: 50px;"><button onclick="abrirModal('modal-banner')" style="padding: 15px; background: var(--blue-primary); color: white; border: none; border-radius: 10px; font-weight: bold; width: 80%;">+ Upload de Banner Global</button></div></div>
+    <!-- ================= ABA 2: CATEGORIAS (Placeholder) ================= -->
+    <div id="aba-categorias" class="tab-content">
+        <div class="top-bar"><div class="location">Categorias</div></div>
+        <div class="loading-text">Aba Categorias em construção...</div>
+    </div>
+
+    <!-- ================= ABA 3: PERFIL ================= -->
+    <div id="aba-perfil" class="tab-content">
+        <div class="top-bar" style="border-bottom: 1px solid var(--border-color); margin-bottom: 20px;">
+            <div class="location">Meu Perfil</div>
+        </div>
+        <div style="padding: 0 20px; text-align: center; margin-bottom: 30px;">
+            <img src="https://ui-avatars.com/api/?name=Eliel&background=2563EB&color=fff&rounded=true&size=100" style="margin-bottom: 10px;">
+            <h2 style="font-size: 1.3rem;">Eliel</h2>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Administrador</p>
+        </div>
+        
+        <div style="padding: 0 20px;">
+            <button class="btn-perfil-acao" onclick="abrirModal('modal-banner')">
+                <i class="fa-solid fa-image"></i> Adicionar Banner ao Carrossel
+            </button>
+        </div>
+    </div>
 
     <!-- ================= MODAIS ================= -->
     <div class="modal-overlay" id="fundo-modal" onclick="fecharModais()"></div>
 
     <!-- Modal Novo Pedido -->
     <div class="modal-content" id="modal-pedido">
-        <div class="modal-header"><h2>Novo Pedido</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <div class="modal-header"><h2>Nova Publicação</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
         <form id="form-pedido">
-            <div class="form-group"><label>O que você precisa?</label><input type="text" id="pedido-titulo" required></div>
-            <div class="form-group"><label>Descrição / Detalhes</label><input type="text" id="pedido-desc" required></div>
+            <div class="form-group"><label>O que você precisa?</label><input type="text" id="pedido-titulo" placeholder="Ex: Preciso de um pintor" required></div>
+            <div class="form-group"><label>Descrição / Detalhes</label><input type="text" id="pedido-desc" placeholder="Detalhes do serviço..." required></div>
             <div class="form-group">
                 <label>Tipo de Publicação</label>
                 <select id="pedido-tipo">
@@ -201,28 +309,38 @@
                     <option value="emprego">Vaga de emprego</option>
                 </select>
             </div>
-            <button type="submit" class="btn-submit">Publicar</button>
+            <button type="submit" class="btn-submit">Publicar Agora</button>
         </form>
     </div>
 
     <!-- Modal Banner -->
     <div class="modal-content" id="modal-banner">
-        <div class="modal-header"><h2>Subir Novo Banner</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
+        <div class="modal-header"><h2>Subir Banner para o Carrossel</h2><button class="btn-close" onclick="fecharModais()">×</button></div>
         <form id="form-banner">
             <div class="file-box">
                 <i class="fa-solid fa-cloud-arrow-up"></i><br>
-                <span id="txt-arquivo">Selecione uma imagem da galeria</span>
+                <span id="txt-arquivo">Clique para escolher imagem</span>
                 <input type="file" id="arquivo-img" accept="image/*" required onchange="document.getElementById('txt-arquivo').innerText = this.files[0].name">
             </div>
-            <button type="submit" class="btn-submit" id="btn-up-banner">Publicar no Carrossel</button>
+            <p style="font-size: 0.8rem; color: var(--text-muted); text-align: center; margin-bottom: 10px;">A imagem vai rodar automaticamente a cada 5 segundos no topo da tela inicial.</p>
+            <button type="submit" class="btn-submit" id="btn-up-banner">Publicar Banner</button>
         </form>
     </div>
 
     <!-- NAV INFERIOR -->
     <nav class="bottom-nav">
-        <div class="nav-item active" onclick="mudarAba('aba-inicio', this)"><i class="fa-solid fa-house"></i><span>Início</span></div>
-        <div class="nav-item" onclick="mudarAba('aba-categorias', this)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:2px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg><span>Categorias</span></div>
-        <div class="nav-item" onclick="mudarAba('aba-perfil', this)"><i class="fa-regular fa-user"></i><span>Perfil</span></div>
+        <div class="nav-item active" onclick="mudarAba('aba-inicio', this)">
+            <i class="fa-solid fa-house"></i>
+            <span>Início</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('aba-categorias', this)">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom:2px;"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg>
+            <span>Categorias</span>
+        </div>
+        <div class="nav-item" onclick="mudarAba('aba-perfil', this)">
+            <i class="fa-regular fa-user"></i>
+            <span>Perfil</span>
+        </div>
     </nav>
 
     <!-- FIREBASE & JS -->
@@ -250,13 +368,14 @@
         window.abrirModal = (id) => { document.getElementById('fundo-modal').classList.add('active'); document.getElementById(id).classList.add('active'); };
         window.fecharModais = () => { document.getElementById('fundo-modal').classList.remove('active'); document.querySelectorAll('.modal-content').forEach(m => m.classList.remove('active')); };
 
-        // LÓGICA DO CARROSSEL DE BANNERS (MÁXIMO DE 3)
+        // LÓGICA DO CARROSSEL DE BANNERS
         let carrosselInterval;
         let slideAtual = 0;
 
         window.mudarSlide = (index) => {
-            const slides = document.querySelectorAll('.carousel-slide');
-            const dots = document.querySelectorAll('.dot');
+            const container = document.getElementById("banner-carousel");
+            const slides = container.querySelectorAll('.carousel-slide');
+            const dots = container.querySelectorAll('.dot');
             if(slides.length === 0) return;
             
             slides.forEach(s => s.classList.remove('active'));
@@ -266,7 +385,7 @@
             dots[index].classList.add('active');
         };
 
-        // Escuta os 3 banners mais recentes do banco de dados
+        // Puxa os 3 últimos banners do banco
         onSnapshot(query(collection(db, "banners"), orderBy("timestamp", "desc"), limit(3)), (snap) => {
             const container = document.getElementById("banner-carousel");
             const slidesDiv = document.getElementById("carousel-slides");
@@ -291,7 +410,6 @@
                 bannersCount++;
             });
 
-            // Inicia o timer automático a cada 5 segundos
             clearInterval(carrosselInterval);
             slideAtual = 0;
             if(bannersCount > 1) {
@@ -302,14 +420,14 @@
             }
         });
 
-        // LER PEDIDOS
+        // LER PEDIDOS DO FIREBASE (INSERE ACIMA DOS EXEMPLOS)
         onSnapshot(query(collection(db, "pedidos"), orderBy("timestamp", "desc")), (snap) => {
-            const container = document.getElementById("lista-pedidos-dinamica");
-            container.innerHTML = ""; 
-            if(snap.empty) { container.innerHTML = "<div class='loading-text'>Nenhuma publicação. Seja o primeiro!</div>"; return; }
+            const container = document.getElementById("lista-pedidos-firebase");
+            container.innerHTML = ""; // Limpa só a parte dinâmica
             
             snap.forEach((doc) => {
                 const d = doc.data();
+                
                 const badgeClass = d.tipo === 'emprego' ? 'badge-job' : 'badge-service';
                 const badgeText = d.tipo === 'emprego' ? 'Vaga de emprego' : 'Preciso de serviço';
                 const tagIcon = d.tipo === 'emprego' ? 'fa-briefcase' : 'fa-handshake';
@@ -318,11 +436,11 @@
                 container.innerHTML += `
                     <div class="feed-card" style="animation: fadeIn 0.5s;">
                         <div class="card-header">
-                            <img src="https://ui-avatars.com/api/?name=Eliel&background=0D6EFD&color=fff&rounded=true" class="avatar-img">
+                            <img src="https://ui-avatars.com/api/?name=Eliel&background=2563EB&color=fff&rounded=true" class="avatar-img">
                             <div class="user-info">
                                 <div class="name-row">
                                     <span class="name">Eliel</span>
-                                    <span class="time"><i class="fa-regular fa-clock"></i> agora</span>
+                                    <span class="time"><i class="fa-regular fa-clock"></i> novo</span>
                                 </div>
                                 <div class="type-row">
                                     <span class="type-user">Pessoa física <i class="fa-solid fa-user"></i></span>
@@ -331,9 +449,13 @@
                             </div>
                         </div>
                         <h4 class="card-title">${d.titulo}</h4>
-                        <p class="card-desc">${d.descricao || 'Sem descrição'}</p>
-                        <div class="card-tags"><span class="tag"><i class="fa-solid ${tagIcon}"></i> ${tagText}</span></div>
-                        <div class="card-footer"><i class="fa-solid fa-location-dot"></i> Pontalina, GO</div>
+                        <p class="card-desc">${d.descricao || 'Sem descrição.'}</p>
+                        <div class="card-tags">
+                            <span class="tag"><i class="fa-solid ${tagIcon}"></i> ${tagText}</span>
+                        </div>
+                        <div class="card-footer">
+                            <i class="fa-solid fa-location-dot"></i> Pontalina, GO
+                        </div>
                         <a href="#" class="btn-whatsapp"><i class="fa-brands fa-whatsapp"></i></a>
                     </div>
                 `;
@@ -356,16 +478,16 @@
         document.getElementById("form-banner").onsubmit = async (e) => {
             e.preventDefault();
             const btn = document.getElementById("btn-up-banner");
-            btn.innerText = "Subindo..."; btn.disabled = true;
+            btn.innerText = "Enviando..."; btn.disabled = true;
             const file = document.getElementById("arquivo-img").files[0];
             try {
                 const sRef = ref(storage, 'banners/' + Date.now());
                 await uploadBytes(sRef, file);
                 const url = await getDownloadURL(sRef);
                 await addDoc(collection(db, "banners"), { url, timestamp: serverTimestamp() });
-                fecharModais(); alert("Banner publicado!");
+                fecharModais(); alert("Banner adicionado ao carrossel!");
             } catch (err) { alert("Erro ao subir banner."); }
-            btn.innerText = "Publicar no Carrossel"; btn.disabled = false;
+            btn.innerText = "Publicar Banner"; btn.disabled = false;
         };
     </script>
 </body>
