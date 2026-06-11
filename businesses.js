@@ -58,7 +58,9 @@ function normalizeFilter(value) {
 }
 
 function getBusinessServices(business) {
-  return Array.isArray(business.services) ? business.services.map(item => String(item || "").trim()).filter(Boolean) : [];
+  return Array.isArray(business.services)
+    ? business.services.map(item => String(item || "").trim()).filter(Boolean)
+    : [];
 }
 
 function matchesBusinessCategory(business, selected) {
@@ -90,7 +92,7 @@ function getDynamicServiceCategories(onlineOnly = false) {
       });
     });
 
-  return services.slice(0, 18);
+  return services.slice(0, 24);
 }
 
 export function renderCategoryPills() {
@@ -99,7 +101,7 @@ export function renderCategoryPills() {
   const categoriesWithServices = [...state.categories, ...getDynamicServiceCategories(false)];
   box.innerHTML = categoriesWithServices.map((cat) => `
     <button class="pill ${state.selectedCategory === cat.name ? "active" : ""}" data-category="${sanitize(cat.name)}">
-      ${sanitize(cat.icon || "")}&nbsp;${sanitize(cat.name)}
+      <span>${sanitize(cat.icon || "▦")}</span>${sanitize(cat.name)}
     </button>
   `).join("");
 
@@ -118,7 +120,7 @@ export function renderOnlineCategoryIcons() {
   const onlineCategories = [...ONLINE_CATEGORIES, ...getDynamicServiceCategories(true)];
   box.innerHTML = onlineCategories.map((cat) => `
     <button class="category-icon ${state.selectedOnlineCategory === cat.name ? "active" : ""}" data-online-category="${sanitize(cat.name)}">
-      <span>${sanitize(cat.icon)}</span>
+      <span>${sanitize(cat.icon || "▦")}</span>
       ${sanitize(cat.name)}
     </button>
   `).join("");
@@ -160,7 +162,8 @@ export function renderBusinesses() {
 function renderBusinessCard(business) {
   const name = business.businessName || business.name || "Empresa";
   const logo = business.logoURL || business.photoURL;
-  const services = Array.isArray(business.services) ? business.services.slice(0, 2) : [];
+  const services = getBusinessServices(business).slice(0, 3);
+  const openInfo = getOpenInfo(business);
   const logoHtml = logo
     ? `<img class="logo" src="${sanitize(logo)}" alt="Logo de ${sanitize(name)}">`
     : `<div class="logo">${sanitize(initials(name))}</div>`;
@@ -169,11 +172,15 @@ function renderBusinessCard(business) {
     <article class="business-card clickable-card" data-business-id="${sanitize(business.id)}" tabindex="0" role="button" aria-label="Abrir perfil de ${sanitize(name)}">
       ${logoHtml}
       <div class="business-info">
-        <h3>${sanitize(name)} <span class="verified">●</span></h3>
+        <div class="card-topline">
+          <h3>${sanitize(name)}</h3>
+          <span class="open-badge ${openInfo.open ? "open" : "closed"}">${openInfo.open ? "Aberto" : "Fechado"}</span>
+        </div>
         <div class="meta-row">${sanitize(business.category || "Serviços")} • ${sanitize(business.address || "Pontalina, GO")}</div>
+        <div class="meta-row">${openInfo.label}</div>
         <p>${sanitize(business.description || "Toque para ver o perfil, serviços, cardápio e contatos.")}</p>
         ${services.length ? `<div class="mini-services">${services.map(s => `<span>${sanitize(s)}</span>`).join("")}</div>` : ``}
-        <button class="open-profile" data-business-id="${sanitize(business.id)}">Ver perfil</button>
+        <button class="open-profile" data-business-id="${sanitize(business.id)}">Ver perfil completo</button>
       </div>
     </article>
   `;
@@ -189,9 +196,12 @@ export function renderOnlineBusinesses() {
 
   const businesses = state.users.filter((b) => {
     if (!b.isOnlineStore) return false;
-    const categoryOk = matchesBusinessCategory(b, category) || (category === "Restaurantes" && b.category === "Alimentação");
+    const categoryOk = matchesBusinessCategory(b, category) || (category === "Restaurantes" && normalizeFilter(b.category) === "alimentação");
     const searchOk = !term || [b.businessName, b.name, b.category, b.description, ...(b.services || [])].join(" ").toLowerCase().includes(term);
-    const filtersOk = Array.from(state.activeOnlineFilters).every(filter => Boolean(b[filter]));
+    const filtersOk = Array.from(state.activeOnlineFilters).every(filter => {
+      if (filter === "isOpen") return getOpenInfo(b).open;
+      return Boolean(b[filter]);
+    });
     return categoryOk && searchOk && filtersOk;
   });
 
@@ -209,6 +219,7 @@ export function renderOnlineBusinesses() {
 function renderOnlineCard(business) {
   const name = business.businessName || business.name || "Empresa";
   const logo = business.logoURL || business.photoURL;
+  const openInfo = getOpenInfo(business);
   const logoHtml = logo
     ? `<img class="online-logo" src="${sanitize(logo)}" alt="Logo de ${sanitize(name)}">`
     : `<div class="online-logo">${sanitize(initials(name))}</div>`;
@@ -218,11 +229,14 @@ function renderOnlineCard(business) {
     <article class="online-card clickable-card" data-business-id="${sanitize(business.id)}" tabindex="0" role="button" aria-label="Abrir perfil de ${sanitize(name)}">
       ${logoHtml}
       <div class="online-info">
-        <h3>${sanitize(name)} <span class="status-chip">Online</span></h3>
+        <h3>${sanitize(name)}</h3>
         <div class="meta-row">${sanitize(business.category || "Delivery")} • Pontalina, GO</div>
-        <div class="meta-row">⭐ ${business.rating || "4,8"} • 🕒 ${business.deliveryTime || "30–50 min"}</div>
-        ${business.freeDelivery ? `<span class="tag-chip">Entrega grátis</span>` : ``}
-        ${business.hasPromotion ? `<span class="tag-chip">Promoção de hoje</span>` : ``}
+        <div class="meta-row">⭐ ${business.rating || "4,8"} • ${openInfo.label}</div>
+        <div class="online-chips">
+          <span class="open-badge ${openInfo.open ? "open" : "closed"}">${openInfo.open ? "Aberto" : "Fechado"}</span>
+          ${business.freeDelivery ? `<span class="tag-chip">Entrega grátis</span>` : ``}
+          ${business.hasPromotion ? `<span class="tag-chip">Promoção</span>` : ``}
+        </div>
       </div>
       <div class="online-actions">
         ${business.hasPromotion ? `<span class="promo-label">Oferta</span>` : ``}
@@ -268,11 +282,79 @@ function renderServices(services) {
   `).join("")}</div>`;
 }
 
+const DAYS = [
+  ["sun", "Domingo"],
+  ["mon", "Segunda"],
+  ["tue", "Terça"],
+  ["wed", "Quarta"],
+  ["thu", "Quinta"],
+  ["fri", "Sexta"],
+  ["sat", "Sábado"]
+];
+
+function minutesFromTime(value) {
+  const [h, m] = String(value || "").split(":").map(Number);
+  if (Number.isNaN(h) || Number.isNaN(m)) return null;
+  return h * 60 + m;
+}
+
+function formatHour(value) {
+  return String(value || "").slice(0, 5);
+}
+
+function getTodayKey() {
+  return DAYS[new Date().getDay()][0];
+}
+
+export function getOpenInfo(business) {
+  const hours = business.businessHours || {};
+  const todayKey = getTodayKey();
+  const today = hours[todayKey];
+
+  if (today && (today.open || today.close || today.closed)) {
+    if (today.closed) return { open: false, label: "Fechado hoje" };
+    const openMin = minutesFromTime(today.open);
+    const closeMin = minutesFromTime(today.close);
+    if (openMin === null || closeMin === null) {
+      return { open: business.isOpen !== false, label: "Horário não informado" };
+    }
+
+    const now = new Date();
+    const nowMin = now.getHours() * 60 + now.getMinutes();
+    const isOpen = closeMin > openMin
+      ? nowMin >= openMin && nowMin <= closeMin
+      : nowMin >= openMin || nowMin <= closeMin;
+
+    return {
+      open: isOpen,
+      label: `${isOpen ? "Aberto agora" : "Fechado agora"} • ${formatHour(today.open)} às ${formatHour(today.close)}`
+    };
+  }
+
+  return {
+    open: business.isOpen !== false,
+    label: business.isOpen === false ? "Fechado agora" : "Aberto agora"
+  };
+}
+
+function renderHoursList(business) {
+  const hours = business.businessHours || {};
+  const hasHours = Object.values(hours).some(day => day && (day.closed || day.open || day.close));
+  if (!hasHours) return `<p class="muted-small">Horário de funcionamento não informado.</p>`;
+
+  return `<div class="hours-list">${DAYS.map(([key, label]) => {
+    const day = hours[key] || {};
+    const text = day.closed ? "Fechado" : (day.open && day.close ? `${formatHour(day.open)} às ${formatHour(day.close)}` : "Não informado");
+    return `<div><span>${label}</span><strong>${sanitize(text)}</strong></div>`;
+  }).join("")}</div>`;
+}
+
 export function openBusinessOverlay(id) {
   const business = state.users.find(b => b.id === id || b.uid === id);
   if (!business) return;
 
   const name = business.businessName || business.name || "Empresa";
+  const openInfo = getOpenInfo(business);
   const whatsappLink = buildWhatsAppLink(business.whatsapp, `Olá, vim pelo App da Cidade e gostaria de mais informações sobre ${name}.`);
   const businessLink = normalizeUrl(business.businessLink);
   const content = $("#businessOverlayContent");
@@ -288,11 +370,13 @@ export function openBusinessOverlay(id) {
     <div class="public-banner" ${bannerStyle}></div>
     <div class="public-content">
       ${logoHtml}
+      <span class="open-badge ${openInfo.open ? "open" : "closed"}">${openInfo.open ? "Aberto agora" : "Fechado agora"}</span>
       <h2>${sanitize(name)}</h2>
       <p class="username">@${sanitize(business.username || "empresa")} • ${sanitize(business.category || "Serviços")}</p>
+      <p class="public-status-line">${sanitize(openInfo.label)}</p>
 
       <div class="public-actions-grid">
-        ${whatsappLink ? `<a class="profile-action whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">☘ WhatsApp</a>` : `<button class="profile-action disabled">WhatsApp</button>`}
+        ${whatsappLink ? `<a class="profile-action whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">💬 WhatsApp</a>` : `<button class="profile-action disabled">WhatsApp não informado</button>`}
         ${business.menuPdfURL ? `<a class="profile-action" href="${sanitize(business.menuPdfURL)}" target="_blank" rel="noopener">📄 Cardápio PDF</a>` : ``}
         ${businessLink ? `<a class="profile-action" href="${sanitize(businessLink)}" target="_blank" rel="noopener">🔗 Link da empresa</a>` : ``}
       </div>
@@ -305,11 +389,16 @@ export function openBusinessOverlay(id) {
       </div>
 
       <div class="public-info">
-        <strong>Serviços prestados</strong>
+        <strong>Serviços / setores</strong>
         ${renderServices(business.services)}
       </div>
 
-      ${whatsappLink ? `<a class="big-whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">☘ Chamar no WhatsApp</a>` : `<button class="big-whatsapp">WhatsApp não informado</button>`}
+      <div class="public-info">
+        <strong>Horário de funcionamento</strong>
+        ${renderHoursList(business)}
+      </div>
+
+      ${whatsappLink ? `<a class="big-whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">💬 Chamar no WhatsApp</a>` : `<button class="big-whatsapp disabled">WhatsApp não informado</button>`}
     </div>
   `;
 

@@ -171,17 +171,30 @@
           <label>Categoria
             <select name="category">
               <option value="Alimentação">Alimentação</option>
-              <option value="Serviços">Serviços</option>
               <option value="Mercado">Mercado</option>
-              <option value="Saúde">Saúde</option>
-              <option value="Beleza">Beleza</option>
-              <option value="Automotivo">Automotivo</option>
-              <option value="Construção">Construção</option>
-              <option value="Tecnologia">Tecnologia</option>
-              <option value="Farmácia">Farmácia</option>
               <option value="Lanches">Lanches</option>
+              <option value="Restaurantes">Restaurantes</option>
               <option value="Açaí">Açaí</option>
               <option value="Bebidas">Bebidas</option>
+              <option value="Açougue">Açougue</option>
+              <option value="Padaria">Padaria</option>
+              <option value="Hortifruti">Hortifruti</option>
+              <option value="Farmácia">Farmácia</option>
+              <option value="Saúde">Saúde</option>
+              <option value="Clínicas">Clínicas</option>
+              <option value="Beleza">Beleza</option>
+              <option value="Barbearia">Barbearia</option>
+              <option value="Serviços">Serviços</option>
+              <option value="Construção">Construção</option>
+              <option value="Automotivo">Automotivo</option>
+              <option value="Educação">Educação</option>
+              <option value="Tecnologia">Tecnologia</option>
+              <option value="Roupas">Roupas</option>
+              <option value="Casa">Casa</option>
+              <option value="Pets">Pets</option>
+              <option value="Eventos">Eventos</option>
+              <option value="Imobiliária">Imobiliária</option>
+              <option value="Transporte">Transporte</option>
             </select>
           </label>
           <label>WhatsApp<input type="tel" name="whatsapp" placeholder="64999999999" /></label>
@@ -227,7 +240,35 @@
 
         <div id="businessProfileFields" class="business-extra hidden">
           <label>Nome da empresa<input type="text" name="businessName" /></label>
-          <label>Categoria<input type="text" name="category" placeholder="Ex: Lanches" /></label>
+          <label>Categoria principal
+            <select name="category">
+              <option value="Alimentação">Alimentação</option>
+              <option value="Mercado">Mercado</option>
+              <option value="Lanches">Lanches</option>
+              <option value="Restaurantes">Restaurantes</option>
+              <option value="Açaí">Açaí</option>
+              <option value="Bebidas">Bebidas</option>
+              <option value="Açougue">Açougue</option>
+              <option value="Padaria">Padaria</option>
+              <option value="Hortifruti">Hortifruti</option>
+              <option value="Farmácia">Farmácia</option>
+              <option value="Saúde">Saúde</option>
+              <option value="Clínicas">Clínicas</option>
+              <option value="Beleza">Beleza</option>
+              <option value="Barbearia">Barbearia</option>
+              <option value="Serviços">Serviços</option>
+              <option value="Construção">Construção</option>
+              <option value="Automotivo">Automotivo</option>
+              <option value="Educação">Educação</option>
+              <option value="Tecnologia">Tecnologia</option>
+              <option value="Roupas">Roupas</option>
+              <option value="Casa">Casa</option>
+              <option value="Pets">Pets</option>
+              <option value="Eventos">Eventos</option>
+              <option value="Imobiliária">Imobiliária</option>
+              <option value="Transporte">Transporte</option>
+            </select>
+          </label>
           <label>WhatsApp<input type="tel" name="whatsapp" placeholder="64999999999" /></label>
           <label>Instagram<input type="text" name="instagram" placeholder="@suaempresa" /></label>
           <label>Endereço<input type="text" name="address" placeholder="Pontalina, GO" /></label>
@@ -251,9 +292,25 @@
           <label>Logo<input type="file" name="logo" accept="image/*" /></label>
           <label>Banner<input type="file" name="banner" accept="image/*" /></label>
           <label class="check-line"><input type="checkbox" name="isOnlineStore" /> Aparecer na aba Online</label>
-          <label class="check-line"><input type="checkbox" name="isOpen" /> Aberto agora</label>
+          <label class="check-line"><input type="checkbox" name="isOpen" /> Aberto agora quando não houver horário cadastrado</label>
           <label class="check-line"><input type="checkbox" name="freeDelivery" /> Entrega grátis</label>
           <label class="check-line"><input type="checkbox" name="hasPromotion" /> Tem promoção</label>
+
+          <div class="hours-builder">
+            <div>
+              <strong>Horário de funcionamento</strong>
+              <small>Informe para o app mostrar automaticamente se está aberto ou fechado.</small>
+            </div>
+            <div class="hours-grid" id="businessHoursFields">
+              <div class="hour-row" data-day="mon"><strong>Segunda</strong><input type="time" name="hours_mon_open"><input type="time" name="hours_mon_close"><label><input type="checkbox" name="hours_mon_closed"> Fechado</label></div>
+              <div class="hour-row" data-day="tue"><strong>Terça</strong><input type="time" name="hours_tue_open"><input type="time" name="hours_tue_close"><label><input type="checkbox" name="hours_tue_closed"> Fechado</label></div>
+              <div class="hour-row" data-day="wed"><strong>Quarta</strong><input type="time" name="hours_wed_open"><input type="time" name="hours_wed_close"><label><input type="checkbox" name="hours_wed_closed"> Fechado</label></div>
+              <div class="hour-row" data-day="thu"><strong>Quinta</strong><input type="time" name="hours_thu_open"><input type="time" name="hours_thu_close"><label><input type="checkbox" name="hours_thu_closed"> Fechado</label></div>
+              <div class="hour-row" data-day="fri"><strong>Sexta</strong><input type="time" name="hours_fri_open"><input type="time" name="hours_fri_close"><label><input type="checkbox" name="hours_fri_closed"> Fechado</label></div>
+              <div class="hour-row" data-day="sat"><strong>Sábado</strong><input type="time" name="hours_sat_open"><input type="time" name="hours_sat_close"><label><input type="checkbox" name="hours_sat_closed"> Fechado</label></div>
+              <div class="hour-row" data-day="sun"><strong>Domingo</strong><input type="time" name="hours_sun_open"><input type="time" name="hours_sun_close"><label><input type="checkbox" name="hours_sun_closed"> Fechado</label></div>
+            </div>
+          </div>
         </div>
 
         <button class="primary-btn" type="submit">Salvar alterações</button>

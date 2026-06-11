@@ -105,6 +105,7 @@ function openEditProfile() {
     form.isOpen.checked = profile.isOpen !== false;
     form.freeDelivery.checked = Boolean(profile.freeDelivery);
     form.hasPromotion.checked = Boolean(profile.hasPromotion);
+    setBusinessHoursFields(profile.businessHours || {});
   }
 
   openModal("editProfileModal");
@@ -176,6 +177,32 @@ function syncServicesHiddenInput() {
   hidden.value = getServiceFieldsValues().join("\n");
 }
 
+const BUSINESS_DAYS = ["mon", "tue", "wed", "thu", "fri", "sat", "sun"];
+
+function setBusinessHoursFields(hours = {}) {
+  BUSINESS_DAYS.forEach((day) => {
+    const open = document.querySelector(`[name="hours_${day}_open"]`);
+    const close = document.querySelector(`[name="hours_${day}_close"]`);
+    const closed = document.querySelector(`[name="hours_${day}_closed"]`);
+    const data = hours?.[day] || {};
+    if (open) open.value = data.open || "";
+    if (close) close.value = data.close || "";
+    if (closed) closed.checked = Boolean(data.closed);
+  });
+}
+
+function getBusinessHoursFromForm(form) {
+  const hours = {};
+  BUSINESS_DAYS.forEach((day) => {
+    hours[day] = {
+      open: form[`hours_${day}_open`]?.value || "",
+      close: form[`hours_${day}_close`]?.value || "",
+      closed: Boolean(form[`hours_${day}_closed`]?.checked)
+    };
+  });
+  return hours;
+}
+
 function setupProfileForm() {
   const form = $("#profileForm");
   const feedback = $("#profileFeedback");
@@ -216,7 +243,8 @@ function setupProfileForm() {
           isOnlineStore: Boolean(data.get("isOnlineStore")),
           isOpen: Boolean(data.get("isOpen")),
           freeDelivery: Boolean(data.get("freeDelivery")),
-          hasPromotion: Boolean(data.get("hasPromotion"))
+          hasPromotion: Boolean(data.get("hasPromotion")),
+          businessHours: getBusinessHoursFromForm(form)
         });
 
         const logo = data.get("logo");

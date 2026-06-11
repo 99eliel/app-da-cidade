@@ -84,3 +84,15 @@ Se uma tela ficar vazia, confira no Console do navegador se as regras do Firesto
 ## Atualização: Perfil público da empresa
 
 Agora, ao clicar em uma empresa, abre o perfil público com WhatsApp, link da empresa, cardápio em PDF e lista de serviços cadastrados no perfil da empresa.
+
+## Atualização de funcionamento
+
+Esta versão adiciona:
+
+- Categorias principais ampliadas e funcionais.
+- Serviços/setores dinâmicos por empresa, usados também nos filtros.
+- Horário de funcionamento por dia da semana.
+- Cálculo automático de aberto/fechado quando houver horário cadastrado.
+- Perfil público da empresa ao clicar nos cards.
+- Botões de WhatsApp corrigidos.
+- Interface mobile ajustada para ficar mais próxima dos prints de referência.

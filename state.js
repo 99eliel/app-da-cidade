@@ -19,19 +19,31 @@ export const state = {
 
 export const DEFAULT_CATEGORIES = [
   { name: "Todos", icon: "▦", active: true, order: 0 },
-  { name: "Serviços", icon: "🛠️", active: true, order: 1 },
-  { name: "Saúde", icon: "💊", active: true, order: 2 },
-  { name: "Mercado", icon: "🛒", active: true, order: 3 },
-  { name: "Alimentação", icon: "🍽️", active: true, order: 4 },
-  { name: "Beleza", icon: "💇", active: true, order: 5 },
-  { name: "Automotivo", icon: "🚗", active: true, order: 6 },
-  { name: "Construção", icon: "🏗️", active: true, order: 7 },
-  { name: "Tecnologia", icon: "💻", active: true, order: 8 },
-  { name: "Farmácia", icon: "💊", active: true, order: 9 },
-  { name: "Lanches", icon: "🍔", active: true, order: 10 },
-  { name: "Açaí", icon: "🍧", active: true, order: 11 },
-  { name: "Bebidas", icon: "🥤", active: true, order: 12 },
-  { name: "Açougue", icon: "🥩", active: true, order: 13 }
+  { name: "Alimentação", icon: "🍽️", active: true, order: 1 },
+  { name: "Mercado", icon: "🛒", active: true, order: 2 },
+  { name: "Lanches", icon: "🍔", active: true, order: 3 },
+  { name: "Restaurantes", icon: "🍕", active: true, order: 4 },
+  { name: "Açaí", icon: "🍧", active: true, order: 5 },
+  { name: "Bebidas", icon: "🥤", active: true, order: 6 },
+  { name: "Açougue", icon: "🥩", active: true, order: 7 },
+  { name: "Padaria", icon: "🥖", active: true, order: 8 },
+  { name: "Hortifruti", icon: "🥬", active: true, order: 9 },
+  { name: "Farmácia", icon: "💊", active: true, order: 10 },
+  { name: "Saúde", icon: "🏥", active: true, order: 11 },
+  { name: "Clínicas", icon: "🩺", active: true, order: 12 },
+  { name: "Beleza", icon: "💇", active: true, order: 13 },
+  { name: "Barbearia", icon: "💈", active: true, order: 14 },
+  { name: "Serviços", icon: "🛠️", active: true, order: 15 },
+  { name: "Construção", icon: "🏗️", active: true, order: 16 },
+  { name: "Automotivo", icon: "🚗", active: true, order: 17 },
+  { name: "Educação", icon: "📚", active: true, order: 18 },
+  { name: "Tecnologia", icon: "💻", active: true, order: 19 },
+  { name: "Roupas", icon: "👕", active: true, order: 20 },
+  { name: "Casa", icon: "🏠", active: true, order: 21 },
+  { name: "Pets", icon: "🐶", active: true, order: 22 },
+  { name: "Eventos", icon: "🎉", active: true, order: 23 },
+  { name: "Imobiliária", icon: "🏘️", active: true, order: 24 },
+  { name: "Transporte", icon: "🚕", active: true, order: 25 }
 ];
 
 export const ONLINE_CATEGORIES = [
@@ -40,8 +52,10 @@ export const ONLINE_CATEGORIES = [
   { name: "Restaurantes", icon: "🍕" },
   { name: "Açaí", icon: "🍧" },
   { name: "Mercado", icon: "🛒" },
+  { name: "Padaria", icon: "🥖" },
   { name: "Açougue", icon: "🥩" },
-  { name: "Bebidas", icon: "🍾" },
+  { name: "Hortifruti", icon: "🥬" },
+  { name: "Bebidas", icon: "🥤" },
   { name: "Farmácia", icon: "💊" }
 ];
 

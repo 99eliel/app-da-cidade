@@ -122,11 +122,20 @@ function setupAuthForms() {
         description: "",
         logoURL: "",
         bannerURL: "",
-        isOnlineStore: ["Alimentação", "Lanches", "Açaí", "Mercado", "Bebidas", "Farmácia"].includes(data.get("category")),
+        isOnlineStore: ["Alimentação", "Lanches", "Restaurantes", "Açaí", "Mercado", "Padaria", "Açougue", "Hortifruti", "Bebidas", "Farmácia"].includes(data.get("category")),
         isOpen: true,
         hasPromotion: false,
         freeDelivery: false,
-        deliveryTags: []
+        deliveryTags: [],
+        businessHours: {
+          mon: { open: "08:00", close: "18:00", closed: false },
+          tue: { open: "08:00", close: "18:00", closed: false },
+          wed: { open: "08:00", close: "18:00", closed: false },
+          thu: { open: "08:00", close: "18:00", closed: false },
+          fri: { open: "08:00", close: "18:00", closed: false },
+          sat: { open: "08:00", close: "12:00", closed: false },
+          sun: { open: "", close: "", closed: true }
+        }
       } : {};
 
       await setDoc(doc(db, "users", credential.user.uid), { ...baseProfile, ...businessProfile });
