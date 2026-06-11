@@ -129,3 +129,22 @@ body.app-unlocked{
 body.app-unlocked #authModal.hidden{
   display:none!important;
 }
+
+
+.install-app-btn {
+  width: 100%;
+  border: 0;
+  border-radius: 18px;
+  padding: 14px 16px;
+  margin: 10px 0 14px;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  color: #fff;
+  font-weight: 900;
+  font-size: 15px;
+  box-shadow: 0 14px 30px rgba(22, 163, 74, 0.22);
+  cursor: pointer;
+}
+
+.install-app-btn:active {
+  transform: scale(0.98);
+}

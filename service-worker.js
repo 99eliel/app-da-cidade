@@ -1,4 +1,4 @@
-const CACHE_NAME = "guia-cidade-v6-login-forcado-login-categorias-whats";
+const CACHE_NAME = "guia-cidade-v8-login-install";
 const ASSETS = [
   "./",
   "./index.html",

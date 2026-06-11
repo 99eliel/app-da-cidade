@@ -12,6 +12,7 @@ import {
 } from "./firebase.js";
 
 import { state } from "./state.js";
+import { promptInstall } from "./pwa.js";
 import { $, sanitize, initials, fileExt, showToast, openModal, closeModal } from "./utils.js";
 import { logout } from "./auth.js";
 
@@ -79,7 +80,7 @@ export function renderProfile() {
   $("#editProfileBtn")?.addEventListener("click", openEditProfile);
   $("#myBusinessBtn")?.addEventListener("click", openEditProfile);
   $("#logoutBtn")?.addEventListener("click", logout);
-  $("#installHelpBtn")?.addEventListener("click", () => showToast("No Chrome/Android, toque em ⋮ e depois em ‘Adicionar à tela inicial’."));
+  $("#installHelpBtn")?.addEventListener("click", promptInstall);
 }
 
 function openEditProfile() {

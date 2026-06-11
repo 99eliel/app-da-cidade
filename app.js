@@ -6,7 +6,7 @@ import { initAuth, requireLogin } from "./auth.js";
 import { initPosts, renderPosts } from "./posts.js";
 import { initBusinesses, renderBusinesses, renderOnlineBusinesses, renderOnlineCategoryIcons } from "./businesses.js";
 import { initProfile } from "./profile.js";
-import { initPWA } from "./pwa.js";
+import { initPWA, promptInstall } from "./pwa.js";
 import { db, collection, onSnapshot, query, where, orderBy } from "./firebase.js";
 
 let bannerIndex = 0;
@@ -96,6 +96,7 @@ function setupOnlineFilters() {
 
 function setupButtons() {
   $("#openLoginBtn")?.addEventListener("click", () => openModal("authModal"));
+  $("#installAppBtnAuth")?.addEventListener("click", promptInstall);
 
   $("#openPostModalBtn")?.addEventListener("click", () => {
     if (requireLogin("Entre para publicar no mural.")) openModal("postModal");
