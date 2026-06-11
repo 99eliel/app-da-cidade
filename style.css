@@ -148,3 +148,313 @@ body.app-unlocked #authModal.hidden{
 .install-app-btn:active {
   transform: scale(0.98);
 }
+
+/* Ajuste fino mobile: visual mais harmônico, parecido com os prints enviados */
+@media (max-width: 520px) {
+  :root{
+    --bottom-nav-height: 70px;
+    --radius: 18px;
+  }
+
+  html, body{
+    background:#fff;
+    font-size:14px;
+  }
+
+  .app-shell{
+    max-width:430px;
+    background:#fff;
+    box-shadow:none;
+  }
+
+  .topbar{
+    background:#fff;
+    padding:12px 16px 8px;
+    padding-top:calc(10px + env(safe-area-inset-top));
+  }
+
+  .location-pill{
+    font-size:14px;
+    font-weight:800;
+    gap:5px;
+  }
+
+  .location-icon{font-size:19px}
+  .chevron{font-size:13px}
+  .icon-button{width:36px;height:36px}
+  .bell{font-size:19px}
+  .badge{font-size:9px;min-width:16px;height:16px;top:2px;right:2px}
+
+  .screen-container{
+    padding:0 14px calc(var(--bottom-nav-height) + 12px);
+  }
+
+  .search-box{
+    height:48px;
+    border-radius:15px;
+    margin:3px 0 14px;
+    padding:0 13px;
+    box-shadow:0 3px 12px rgba(15,23,42,.04);
+  }
+  .search-box span{font-size:21px}
+  .search-box input{font-size:14px}
+
+  .hero-carousel{margin-bottom:13px}
+  .banner-track{
+    height:122px;
+    border-radius:16px;
+    box-shadow:0 8px 22px rgba(37,99,235,.13);
+  }
+  .banner-slide{padding:15px 17px}
+  .banner-slide h2{
+    font-size:22px;
+    line-height:1.02;
+    max-width:210px;
+    margin-bottom:5px;
+    letter-spacing:-.5px;
+  }
+  .banner-slide p{
+    font-size:13px;
+    line-height:1.2;
+    margin-bottom:9px;
+  }
+  .banner-slide .banner-action{
+    font-size:10.5px;
+    padding:7px 10px;
+    border-radius:7px;
+  }
+  .banner-emoji{font-size:58px}
+  .dots{margin-top:8px;gap:6px}
+  .dot{width:7px;height:7px}.dot.active{width:18px}
+
+  .primary-cta{
+    height:48px;
+    border-radius:13px;
+    font-size:14px;
+    letter-spacing:.1px;
+    box-shadow:0 9px 19px rgba(37,99,235,.18);
+  }
+  .primary-cta span{font-size:25px}
+
+  .section-header{margin:18px 0 10px}
+  .section-header h1,
+  .section-header h2{
+    font-size:19px;
+    letter-spacing:-.35px;
+  }
+  .section-header.vertical h1{font-size:24px}
+  .section-header.vertical p{font-size:13px;margin-top:4px}
+  .link-button{font-size:13px}
+
+  .cards-list{gap:10px}
+  .post-card,
+  .business-card,
+  .online-card{
+    border-radius:17px;
+    padding:12px;
+    box-shadow:0 4px 14px rgba(15,23,42,.045);
+    border-color:#e9edf3;
+  }
+
+  .post-card{
+    grid-template-columns:52px 1fr 44px;
+    gap:9px;
+    min-height:auto;
+    padding:12px;
+  }
+  .post-card .avatar,
+  .avatar,
+  .logo{
+    width:50px;
+    height:50px;
+    font-size:15px;
+  }
+  .post-main h3,
+  .business-info h3,
+  .online-info h3{
+    font-size:14.5px;
+    line-height:1.15;
+    margin:2px 0 3px;
+  }
+  .post-main h4{
+    font-size:15.5px;
+    line-height:1.15;
+    margin:7px 0 4px;
+    padding-right:50px;
+  }
+  .post-main p,
+  .business-info p,
+  .online-info p{
+    font-size:13px;
+    line-height:1.34;
+  }
+  .meta-row{font-size:12px;gap:5px}
+  .post-time{
+    top:12px;
+    right:12px;
+    font-size:11px;
+    padding:0;
+    border:0;
+    background:transparent;
+  }
+  .need-chip,.job-chip{
+    font-size:10.5px;
+    padding:5px 7px;
+    border-radius:7px;
+  }
+  .tag-chip{
+    font-size:11.5px;
+    padding:5px 8px;
+    margin-top:8px;
+    border-radius:7px;
+  }
+  .whatsapp-float{
+    width:42px;
+    height:42px;
+    min-width:42px;
+    border-radius:50%;
+    padding:0;
+    font-size:0!important;
+    box-shadow:0 7px 15px rgba(34,197,94,.22);
+  }
+  .whatsapp-float::after{display:none!important}
+  .whatsapp-float .wa-icon{width:22px;height:22px}
+
+  .pills-row{
+    gap:8px;
+    padding:2px 0 12px;
+  }
+  .pill{
+    font-size:12.5px;
+    padding:9px 11px;
+    border-radius:14px;
+    box-shadow:none;
+  }
+  .pill span{font-size:17px}
+
+  .business-card{
+    grid-template-columns:58px 1fr;
+    gap:10px;
+  }
+  .business-card .logo,
+  .business-card .online-logo,
+  .online-card .online-logo{
+    width:54px;
+    height:54px;
+    border-radius:15px;
+  }
+  .business-card .open-profile,
+  .outline-green{
+    margin-top:8px;
+    padding:8px 10px;
+    border-radius:10px;
+    font-size:12px;
+  }
+  .open-badge{
+    font-size:10px;
+    padding:4px 7px;
+  }
+  .mini-services span,
+  .online-chips span{
+    font-size:10.5px!important;
+    padding:4px 7px!important;
+  }
+
+  .category-icons{
+    gap:9px;
+    padding:0 0 12px;
+  }
+  .category-icon{
+    min-width:70px;
+    height:80px;
+    border-radius:16px;
+    font-size:10.5px;
+    gap:6px;
+    box-shadow:none;
+  }
+  .category-icon span{font-size:25px}
+
+  .all-categories-grid{
+    border-radius:18px;
+    padding:12px;
+    margin-bottom:13px;
+    box-shadow:0 4px 14px rgba(15,23,42,.045);
+  }
+  .all-categories-head strong{font-size:14px}
+  .all-categories-head span{font-size:11px}
+  .all-categories-items{gap:8px}
+  .category-choice{
+    min-height:72px;
+    border-radius:14px;
+    gap:5px;
+  }
+  .category-choice span{font-size:23px}
+  .category-choice strong{font-size:11px}
+
+  .delivery-banner{
+    border-radius:17px;
+    padding:17px 15px;
+    margin-bottom:12px;
+  }
+  .delivery-banner h2{
+    font-size:22px;
+    letter-spacing:-.4px;
+  }
+  .delivery-banner p{font-size:13px}
+  .delivery-banner button{
+    font-size:12px;
+    padding:10px 13px;
+    border-radius:10px;
+  }
+  .delivery-illustration{font-size:58px}
+
+  .filter-row{gap:8px;padding:2px 0 5px}
+  .filter-btn{
+    height:40px;
+    border-radius:12px;
+    font-size:12px;
+    padding:0 11px;
+    box-shadow:none;
+  }
+  .online-count{font-size:12px}
+  .green-chip{font-size:10.5px;padding:4px 7px}
+
+  .online-card{
+    grid-template-columns:58px 1fr;
+    gap:10px;
+  }
+  .online-actions{margin-top:2px}
+  .promo-label,.status-chip{font-size:10px;padding:4px 7px}
+
+  .bottom-nav{
+    height:64px;
+    max-width:430px;
+    border-radius:20px 20px 0 0;
+    padding-bottom:calc(4px + env(safe-area-inset-bottom));
+  }
+  .nav-item{
+    font-size:10.5px;
+    gap:2px;
+  }
+  .nav-item .material-symbols-rounded,
+  .nav-item span:first-child{
+    font-size:23px!important;
+  }
+
+  .modal-card,
+  .sheet-card{
+    border-radius:22px;
+  }
+  .modal-card h2,
+  .sheet-card h2{font-size:20px}
+  .form-group label{font-size:12px}
+  .form-group input,
+  .form-group select,
+  .form-group textarea{
+    font-size:13px;
+    min-height:42px;
+    border-radius:12px;
+  }
+  .primary-btn{height:46px;font-size:13.5px;border-radius:13px}
+  .secondary-btn,.danger-btn{height:42px;font-size:13px;border-radius:12px}
+}
