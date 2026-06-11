@@ -79,3 +79,8 @@ Se subir no GitHub Pages, o PWA deve funcionar melhor depois de publicado com HT
 ## Observação
 
 Se uma tela ficar vazia, confira no Console do navegador se as regras do Firestore/Storage estão permitindo leitura/escrita nas coleções usadas.
+
+
+## Atualização: Perfil público da empresa
+
+Agora, ao clicar em uma empresa, abre o perfil público com WhatsApp, link da empresa, cardápio em PDF e lista de serviços cadastrados no perfil da empresa.

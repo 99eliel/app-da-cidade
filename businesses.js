@@ -93,7 +93,7 @@ export function renderBusinesses() {
 
   const businesses = state.users.filter((b) => {
     const categoryOk = selected === "Todos" || !selected || b.category === selected;
-    const searchOk = !term || [b.businessName, b.name, b.category, b.description, b.address]
+    const searchOk = !term || [b.businessName, b.name, b.category, b.description, b.address, ...(b.services || [])]
       .join(" ")
       .toLowerCase()
       .includes(term);
@@ -112,17 +112,19 @@ export function renderBusinesses() {
 function renderBusinessCard(business) {
   const name = business.businessName || business.name || "Empresa";
   const logo = business.logoURL || business.photoURL;
+  const services = Array.isArray(business.services) ? business.services.slice(0, 2) : [];
   const logoHtml = logo
     ? `<img class="logo" src="${sanitize(logo)}" alt="Logo de ${sanitize(name)}">`
     : `<div class="logo">${sanitize(initials(name))}</div>`;
 
   return `
-    <article class="business-card">
+    <article class="business-card clickable-card" data-business-id="${sanitize(business.id)}" tabindex="0" role="button" aria-label="Abrir perfil de ${sanitize(name)}">
       ${logoHtml}
       <div class="business-info">
         <h3>${sanitize(name)} <span class="verified">●</span></h3>
         <div class="meta-row">${sanitize(business.category || "Serviços")} • ${sanitize(business.address || "Pontalina, GO")}</div>
-        <p>${sanitize(business.description || "Toque para ver mais informações e chamar no WhatsApp.")}</p>
+        <p>${sanitize(business.description || "Toque para ver o perfil, serviços, cardápio e contatos.")}</p>
+        ${services.length ? `<div class="mini-services">${services.map(s => `<span>${sanitize(s)}</span>`).join("")}</div>` : ``}
         <button class="open-profile" data-business-id="${sanitize(business.id)}">Ver perfil</button>
       </div>
     </article>
@@ -140,7 +142,7 @@ export function renderOnlineBusinesses() {
   const businesses = state.users.filter((b) => {
     if (!b.isOnlineStore) return false;
     const categoryOk = category === "Todos" || !category || b.category === category || (category === "Restaurantes" && b.category === "Alimentação");
-    const searchOk = !term || [b.businessName, b.name, b.category, b.description].join(" ").toLowerCase().includes(term);
+    const searchOk = !term || [b.businessName, b.name, b.category, b.description, ...(b.services || [])].join(" ").toLowerCase().includes(term);
     const filtersOk = Array.from(state.activeOnlineFilters).every(filter => Boolean(b[filter]));
     return categoryOk && searchOk && filtersOk;
   });
@@ -162,11 +164,10 @@ function renderOnlineCard(business) {
   const logoHtml = logo
     ? `<img class="online-logo" src="${sanitize(logo)}" alt="Logo de ${sanitize(name)}">`
     : `<div class="online-logo">${sanitize(initials(name))}</div>`;
-  const actionText = ["Mercado", "Farmácia", "Açougue", "Bebidas"].includes(business.category) ? "Ver Loja" : "Ver Cardápio";
-  const link = buildWhatsAppLink(business.whatsapp, `Olá, vim pelo App da Cidade e gostaria de ver ${actionText.toLowerCase()} de ${name}.`);
+  const actionText = business.menuPdfURL ? "Ver Cardápio" : "Ver Perfil";
 
   return `
-    <article class="online-card">
+    <article class="online-card clickable-card" data-business-id="${sanitize(business.id)}" tabindex="0" role="button" aria-label="Abrir perfil de ${sanitize(name)}">
       ${logoHtml}
       <div class="online-info">
         <h3>${sanitize(name)} <span class="status-chip">Online</span></h3>
@@ -177,16 +178,46 @@ function renderOnlineCard(business) {
       </div>
       <div class="online-actions">
         ${business.hasPromotion ? `<span class="promo-label">Oferta</span>` : ``}
-        ${link ? `<a class="outline-green" href="${link}" target="_blank" rel="noopener">☘ ${actionText}</a>` : `<button class="outline-green" data-business-id="${sanitize(business.id)}">Ver Perfil</button>`}
+        <button class="outline-green" data-business-id="${sanitize(business.id)}">${business.menuPdfURL ? "📄" : "👁️"} ${actionText}</button>
       </div>
     </article>
   `;
 }
 
 function attachBusinessOverlayEvents(root) {
-  root.querySelectorAll("[data-business-id]").forEach((btn) => {
-    btn.addEventListener("click", () => openBusinessOverlay(btn.dataset.businessId));
+  root.querySelectorAll("[data-business-id]").forEach((el) => {
+    el.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      openBusinessOverlay(el.dataset.businessId);
+    });
+    el.addEventListener("keydown", (event) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        openBusinessOverlay(el.dataset.businessId);
+      }
+    });
   });
+}
+
+function normalizeUrl(url) {
+  const value = String(url || "").trim();
+  if (!value) return "";
+  if (/^https?:\/\//i.test(value)) return value;
+  return `https://${value}`;
+}
+
+function renderServices(services) {
+  if (!Array.isArray(services) || !services.length) {
+    return `<div class="empty-services">Nenhum serviço cadastrado ainda.</div>`;
+  }
+
+  return `<div class="service-list">${services.map(service => `
+    <div class="service-item">
+      <span>✓</span>
+      <strong>${sanitize(service)}</strong>
+    </div>
+  `).join("")}</div>`;
 }
 
 export function openBusinessOverlay(id) {
@@ -194,7 +225,8 @@ export function openBusinessOverlay(id) {
   if (!business) return;
 
   const name = business.businessName || business.name || "Empresa";
-  const link = buildWhatsAppLink(business.whatsapp, `Olá, vim pelo App da Cidade e gostaria de mais informações sobre ${name}.`);
+  const whatsappLink = buildWhatsAppLink(business.whatsapp, `Olá, vim pelo App da Cidade e gostaria de mais informações sobre ${name}.`);
+  const businessLink = normalizeUrl(business.businessLink);
   const content = $("#businessOverlayContent");
   const overlay = $("#businessOverlay");
 
@@ -210,13 +242,26 @@ export function openBusinessOverlay(id) {
       ${logoHtml}
       <h2>${sanitize(name)}</h2>
       <p class="username">@${sanitize(business.username || "empresa")} • ${sanitize(business.category || "Serviços")}</p>
+
+      <div class="public-actions-grid">
+        ${whatsappLink ? `<a class="profile-action whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">☘ WhatsApp</a>` : `<button class="profile-action disabled">WhatsApp</button>`}
+        ${business.menuPdfURL ? `<a class="profile-action" href="${sanitize(business.menuPdfURL)}" target="_blank" rel="noopener">📄 Cardápio PDF</a>` : ``}
+        ${businessLink ? `<a class="profile-action" href="${sanitize(businessLink)}" target="_blank" rel="noopener">🔗 Link da empresa</a>` : ``}
+      </div>
+
       <div class="public-info">
         <strong>Sobre nós</strong>
         <p>${sanitize(business.description || "Empresa cadastrada no App da Cidade.")}</p>
         <p>📍 ${sanitize(business.address || "Pontalina, GO")}</p>
         ${business.instagram ? `<p>📷 ${sanitize(business.instagram)}</p>` : ``}
       </div>
-      ${link ? `<a class="big-whatsapp" href="${link}" target="_blank" rel="noopener">☘ Chamar no WhatsApp</a>` : `<button class="big-whatsapp">WhatsApp não informado</button>`}
+
+      <div class="public-info">
+        <strong>Serviços prestados</strong>
+        ${renderServices(business.services)}
+      </div>
+
+      ${whatsappLink ? `<a class="big-whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">☘ Chamar no WhatsApp</a>` : `<button class="big-whatsapp">WhatsApp não informado</button>`}
     </div>
   `;
 

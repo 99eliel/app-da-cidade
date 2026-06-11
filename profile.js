@@ -97,6 +97,8 @@ function openEditProfile() {
     form.instagram.value = profile.instagram || "";
     form.address.value = profile.address || "Pontalina, GO";
     form.description.value = profile.description || "";
+    form.servicesText.value = Array.isArray(profile.services) ? profile.services.join("\n") : "";
+    form.businessLink.value = profile.businessLink || "";
     form.isOnlineStore.checked = Boolean(profile.isOnlineStore);
     form.isOpen.checked = profile.isOpen !== false;
     form.freeDelivery.checked = Boolean(profile.freeDelivery);
@@ -140,6 +142,8 @@ function setupProfileForm() {
           instagram: String(data.get("instagram") || "").trim(),
           address: String(data.get("address") || "Pontalina, GO").trim(),
           description: String(data.get("description") || "").trim(),
+          services: String(data.get("servicesText") || "").split("\n").map(item => item.trim()).filter(Boolean),
+          businessLink: String(data.get("businessLink") || "").trim(),
           isOnlineStore: Boolean(data.get("isOnlineStore")),
           isOpen: Boolean(data.get("isOpen")),
           freeDelivery: Boolean(data.get("freeDelivery")),
@@ -155,6 +159,14 @@ function setupProfileForm() {
         if (banner && banner.size > 0) {
           update.bannerURL = await uploadUserFile(banner, `users/${state.currentUser.uid}/banner/banner.${fileExt(banner)}`);
         }
+
+        const menuPdf = data.get("menuPdf");
+        if (menuPdf && menuPdf.size > 0) {
+          if (menuPdf.type !== "application/pdf") {
+            throw new Error("O cardápio precisa ser um arquivo PDF.");
+          }
+          update.menuPdfURL = await uploadUserFile(menuPdf, `users/${state.currentUser.uid}/menu/cardapio.${fileExt(menuPdf)}`);
+        }
       }
 
       await updateDoc(doc(db, "users", state.currentUser.uid), update);
@@ -165,7 +177,7 @@ function setupProfileForm() {
       form.reset();
     } catch (error) {
       console.error(error);
-      feedback.textContent = "Erro ao salvar. Confira as regras do Firestore/Storage.";
+      feedback.textContent = error.message === "O cardápio precisa ser um arquivo PDF." ? error.message : "Erro ao salvar. Confira as regras do Firestore/Storage.";
     }
   });
 }
