@@ -12,7 +12,7 @@ import {
 } from "./firebase.js";
 
 import { state } from "./state.js";
-import { $, sanitize, formatTimeAgo, initials, buildWhatsAppLink, showToast, closeModal } from "./utils.js";
+import { $, sanitize, formatTimeAgo, initials, buildWhatsAppLink, whatsappIcon, showToast, closeModal } from "./utils.js";
 import { requireLogin } from "./auth.js";
 
 let unsubscribePosts = null;
@@ -120,7 +120,7 @@ function renderPostCard(post) {
         <div class="meta-row" style="margin-top:10px">📍 Pontalina, GO</div>
       </div>
       <div class="post-time">🕒 ${formatTimeAgo(post.createdAt)}</div>
-      ${link ? `<a class="whatsapp-float" href="${link}" target="_blank" rel="noopener" aria-label="Chamar no WhatsApp">💬</a>` : `<button class="whatsapp-float" title="Sem WhatsApp">💬</button>`}
+      ${link ? `<a class="whatsapp-float" href="${link}" target="_blank" rel="noopener" aria-label="Chamar no WhatsApp">${whatsappIcon()}</a>` : `<button class="whatsapp-float" title="Sem WhatsApp">${whatsappIcon()}</button>`}
       <div style="position:absolute;right:14px;top:48px">${chip}</div>
     </article>
   `;

@@ -20,6 +20,16 @@ import { renderProfile } from "./profile.js";
 import { renderPosts } from "./posts.js";
 import { renderBusinesses, renderOnlineBusinesses } from "./businesses.js";
 
+function lockAppForLogin() {
+  document.body.classList.add("auth-required");
+  document.getElementById("authModal")?.classList.remove("hidden");
+}
+
+function unlockAppAfterLogin() {
+  document.body.classList.remove("auth-required");
+  document.getElementById("authModal")?.classList.add("hidden");
+}
+
 export function initAuth() {
   setupAuthForms();
 
@@ -28,6 +38,7 @@ export function initAuth() {
 
     if (!user) {
       state.currentProfile = null;
+      lockAppForLogin();
       renderProfile();
       renderPosts();
       renderBusinesses();
@@ -37,6 +48,7 @@ export function initAuth() {
 
     const snap = await getDoc(doc(db, "users", user.uid));
     state.currentProfile = snap.exists() ? { id: snap.id, ...snap.data() } : null;
+    unlockAppAfterLogin();
     renderProfile();
     renderPosts();
     renderBusinesses();

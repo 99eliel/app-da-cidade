@@ -2,7 +2,7 @@
 
 import { db, collection, onSnapshot, query, where, getDocs } from "./firebase.js";
 import { state, DEFAULT_CATEGORIES, ONLINE_CATEGORIES } from "./state.js";
-import { $, sanitize, initials, buildWhatsAppLink } from "./utils.js";
+import { $, sanitize, initials, buildWhatsAppLink, whatsappIcon } from "./utils.js";
 
 let unsubscribeUsers = null;
 let unsubscribeCategories = null;
@@ -105,9 +105,53 @@ export function renderCategoryPills() {
     </button>
   `).join("");
 
+  renderAllCategoriesGrid(categoriesWithServices);
+
   box.querySelectorAll("[data-category]").forEach((btn) => {
     btn.addEventListener("click", () => {
-      state.selectedCategory = btn.dataset.category;
+      const selected = btn.dataset.category;
+      if (selected === "Todos") {
+        state.selectedCategory = "Todos";
+        renderCategoryPills();
+        renderBusinesses();
+        $("#allCategoriesGrid")?.classList.toggle("hidden");
+        return;
+      }
+      state.selectedCategory = selected;
+      $("#allCategoriesGrid")?.classList.add("hidden");
+      renderCategoryPills();
+      renderBusinesses();
+    });
+  });
+}
+
+function renderAllCategoriesGrid(categoriesWithServices) {
+  const grid = $("#allCategoriesGrid");
+  if (!grid) return;
+
+  const clean = categoriesWithServices
+    .filter(cat => cat.name !== "Todos")
+    .filter((cat, index, arr) => arr.findIndex(item => normalizeFilter(item.name) === normalizeFilter(cat.name)) === index);
+
+  grid.innerHTML = `
+    <div class="all-categories-head">
+      <strong>Escolha uma categoria</strong>
+      <span>Toque para filtrar mais rápido</span>
+    </div>
+    <div class="all-categories-items">
+      ${clean.map(cat => `
+        <button class="category-choice" data-category-choice="${sanitize(cat.name)}">
+          <span>${sanitize(cat.icon || "▦")}</span>
+          <strong>${sanitize(cat.name)}</strong>
+        </button>
+      `).join("")}
+    </div>
+  `;
+
+  grid.querySelectorAll("[data-category-choice]").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      state.selectedCategory = btn.dataset.categoryChoice;
+      grid.classList.add("hidden");
       renderCategoryPills();
       renderBusinesses();
     });
@@ -376,7 +420,7 @@ export function openBusinessOverlay(id) {
       <p class="public-status-line">${sanitize(openInfo.label)}</p>
 
       <div class="public-actions-grid">
-        ${whatsappLink ? `<a class="profile-action whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">💬 WhatsApp</a>` : `<button class="profile-action disabled">WhatsApp não informado</button>`}
+        ${whatsappLink ? `<a class="profile-action whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">${whatsappIcon("WhatsApp")}</a>` : `<button class="profile-action disabled">WhatsApp não informado</button>`}
         ${business.menuPdfURL ? `<a class="profile-action" href="${sanitize(business.menuPdfURL)}" target="_blank" rel="noopener">📄 Cardápio PDF</a>` : ``}
         ${businessLink ? `<a class="profile-action" href="${sanitize(businessLink)}" target="_blank" rel="noopener">🔗 Link da empresa</a>` : ``}
       </div>
@@ -398,7 +442,7 @@ export function openBusinessOverlay(id) {
         ${renderHoursList(business)}
       </div>
 
-      ${whatsappLink ? `<a class="big-whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">💬 Chamar no WhatsApp</a>` : `<button class="big-whatsapp disabled">WhatsApp não informado</button>`}
+      ${whatsappLink ? `<a class="big-whatsapp" href="${whatsappLink}" target="_blank" rel="noopener">${whatsappIcon("Chamar no WhatsApp")}</a>` : `<button class="big-whatsapp disabled">WhatsApp não informado</button>`}
     </div>
   `;
 

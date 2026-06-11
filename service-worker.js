@@ -1,4 +1,4 @@
-const CACHE_NAME = "app-da-cidade-v1";
+const CACHE_NAME = "guia-cidade-v6-login-categorias-whats";
 const ASSETS = [
   "./",
   "./index.html",
