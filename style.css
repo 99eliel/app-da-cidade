@@ -77,3 +77,55 @@ body.auth-required #authTitle::before{content:"👋";display:inline-block;margin
 .category-choice{min-height:82px;border-radius:18px;background:#f8fafc;border:1px solid #edf0f5;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;padding:10px 6px;text-align:center;box-shadow:0 5px 15px rgba(15,23,42,.04)}
 .category-choice span{font-size:26px}.category-choice strong{font-size:12px;line-height:1.1;color:#1f2937}.category-choice:active{transform:scale(.98);background:#eff6ff}
 @media (max-width:360px){.all-categories-items{grid-template-columns:repeat(2,1fr)}}
+
+/* LOGIN OBRIGATÓRIO - trava total do aplicativo até autenticar */
+body.auth-locked,
+body.auth-required{
+  min-height:100vh;
+  overflow:hidden;
+  background:linear-gradient(180deg,#2563eb 0%,#0f172a 100%);
+}
+body.auth-locked .app-shell,
+body.auth-required .app-shell{
+  display:none!important;
+}
+body.auth-locked #authModal,
+body.auth-required #authModal{
+  display:flex!important;
+  align-items:center!important;
+  justify-content:center!important;
+  background:linear-gradient(180deg,#2563eb 0%,#0f172a 100%)!important;
+  z-index:9999!important;
+}
+body.auth-locked #authModal .modal-card,
+body.auth-required #authModal .modal-card{
+  border-radius:28px!important;
+  max-width:430px!important;
+  max-height:calc(100vh - 36px)!important;
+  margin:18px!important;
+  box-shadow:0 24px 70px rgba(0,0,0,.25)!important;
+}
+body.auth-locked #authModal .close-btn,
+body.auth-required #authModal .close-btn{
+  display:none!important;
+}
+body.auth-locked #authModal::before,
+body.auth-required #authModal::before{
+  content:"App da Cidade";
+  position:fixed;
+  top:calc(28px + env(safe-area-inset-top));
+  left:0;
+  right:0;
+  text-align:center;
+  color:#fff;
+  font-size:28px;
+  font-weight:1000;
+  letter-spacing:-.7px;
+}
+body.app-unlocked{
+  overflow:auto;
+  background:var(--bg);
+}
+body.app-unlocked #authModal.hidden{
+  display:none!important;
+}

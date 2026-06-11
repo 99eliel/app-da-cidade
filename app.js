@@ -43,12 +43,15 @@ function setupNavigation() {
 
 function setupModals() {
   $$("[data-close-modal]").forEach((btn) => {
-    btn.addEventListener("click", () => closeModal(btn.dataset.closeModal));
+    btn.addEventListener("click", () => {
+      if (document.body.classList.contains("auth-locked") && btn.dataset.closeModal === "authModal") return;
+      closeModal(btn.dataset.closeModal);
+    });
   });
 
   $$(".modal").forEach((modal) => {
     modal.addEventListener("click", (event) => {
-      if (event.target === modal) modal.classList.add("hidden");
+      if (event.target === modal && !(document.body.classList.contains("auth-locked") && modal.id === "authModal")) modal.classList.add("hidden");
     });
   });
 

@@ -21,12 +21,16 @@ import { renderPosts } from "./posts.js";
 import { renderBusinesses, renderOnlineBusinesses } from "./businesses.js";
 
 function lockAppForLogin() {
+  document.body.classList.remove("app-unlocked");
+  document.body.classList.add("auth-locked");
   document.body.classList.add("auth-required");
-  document.getElementById("authModal")?.classList.remove("hidden");
+  lockAppForLogin();
 }
 
 function unlockAppAfterLogin() {
+  document.body.classList.remove("auth-locked");
   document.body.classList.remove("auth-required");
+  document.body.classList.add("app-unlocked");
   document.getElementById("authModal")?.classList.add("hidden");
 }
 
@@ -84,7 +88,6 @@ function setupAuthForms() {
     const data = new FormData(loginForm);
     try {
       await signInWithEmailAndPassword(auth, data.get("email"), data.get("password"));
-      closeModal("authModal");
       showToast("Login realizado com sucesso!");
       loginForm.reset();
     } catch (error) {
@@ -151,7 +154,6 @@ function setupAuthForms() {
       } : {};
 
       await setDoc(doc(db, "users", credential.user.uid), { ...baseProfile, ...businessProfile });
-      closeModal("authModal");
       showToast("Conta criada com sucesso!");
       registerForm.reset();
       extra.classList.add("hidden");
@@ -169,7 +171,7 @@ export async function logout() {
 export function requireLogin(message = "Entre para continuar.") {
   if (!state.currentUser) {
     showToast(message);
-    document.getElementById("authModal")?.classList.remove("hidden");
+    lockAppForLogin();
     return false;
   }
   return true;
