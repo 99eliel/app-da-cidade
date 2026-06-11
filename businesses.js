@@ -17,6 +17,8 @@ function listenUsers() {
   const q = query(collection(db, "users"), where("accountType", "==", "empresa"));
   unsubscribeUsers = onSnapshot(q, (snapshot) => {
     state.users = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    renderCategoryPills();
+    renderOnlineCategoryIcons();
     renderBusinesses();
     renderOnlineBusinesses();
   }, async (error) => {
@@ -28,6 +30,8 @@ function listenUsers() {
       console.error(err);
       state.users = [];
     }
+    renderCategoryPills();
+    renderOnlineCategoryIcons();
     renderBusinesses();
     renderOnlineBusinesses();
   });
@@ -41,16 +45,59 @@ function listenCategories() {
       ? [{ name: "Todos", icon: "▦", active: true, order: 0 }, ...fromDb.filter(c => c.active !== false).sort((a, b) => (a.order || 99) - (b.order || 99))]
       : DEFAULT_CATEGORIES;
     renderCategoryPills();
+    renderBusinesses();
   }, () => {
     state.categories = DEFAULT_CATEGORIES;
     renderCategoryPills();
+    renderBusinesses();
   });
+}
+
+function normalizeFilter(value) {
+  return String(value || "").trim().toLowerCase();
+}
+
+function getBusinessServices(business) {
+  return Array.isArray(business.services) ? business.services.map(item => String(item || "").trim()).filter(Boolean) : [];
+}
+
+function matchesBusinessCategory(business, selected) {
+  if (!selected || selected === "Todos") return true;
+  const selectedKey = normalizeFilter(selected);
+  const categoryKey = normalizeFilter(business.category);
+  const services = getBusinessServices(business).map(normalizeFilter);
+  return categoryKey === selectedKey || services.includes(selectedKey);
+}
+
+function getDynamicServiceCategories(onlineOnly = false) {
+  const baseNames = new Set([
+    ...DEFAULT_CATEGORIES.map(cat => normalizeFilter(cat.name)),
+    ...ONLINE_CATEGORIES.map(cat => normalizeFilter(cat.name)),
+    ...state.categories.map(cat => normalizeFilter(cat.name))
+  ]);
+  const seen = new Set();
+  const services = [];
+
+  state.users
+    .filter(business => business.accountType === "empresa")
+    .filter(business => !onlineOnly || business.isOnlineStore)
+    .forEach((business) => {
+      getBusinessServices(business).forEach((service) => {
+        const key = normalizeFilter(service);
+        if (!key || seen.has(key) || baseNames.has(key)) return;
+        seen.add(key);
+        services.push({ name: service, icon: "＋", active: true, order: 100 });
+      });
+    });
+
+  return services.slice(0, 18);
 }
 
 export function renderCategoryPills() {
   const box = $("#categoryPills");
   if (!box) return;
-  box.innerHTML = state.categories.map((cat) => `
+  const categoriesWithServices = [...state.categories, ...getDynamicServiceCategories(false)];
+  box.innerHTML = categoriesWithServices.map((cat) => `
     <button class="pill ${state.selectedCategory === cat.name ? "active" : ""}" data-category="${sanitize(cat.name)}">
       ${sanitize(cat.icon || "")}&nbsp;${sanitize(cat.name)}
     </button>
@@ -68,7 +115,8 @@ export function renderCategoryPills() {
 export function renderOnlineCategoryIcons() {
   const box = $("#onlineCategoryIcons");
   if (!box) return;
-  box.innerHTML = ONLINE_CATEGORIES.map((cat) => `
+  const onlineCategories = [...ONLINE_CATEGORIES, ...getDynamicServiceCategories(true)];
+  box.innerHTML = onlineCategories.map((cat) => `
     <button class="category-icon ${state.selectedOnlineCategory === cat.name ? "active" : ""}" data-online-category="${sanitize(cat.name)}">
       <span>${sanitize(cat.icon)}</span>
       ${sanitize(cat.name)}
@@ -92,7 +140,7 @@ export function renderBusinesses() {
   const selected = state.selectedCategory;
 
   const businesses = state.users.filter((b) => {
-    const categoryOk = selected === "Todos" || !selected || b.category === selected;
+    const categoryOk = matchesBusinessCategory(b, selected);
     const searchOk = !term || [b.businessName, b.name, b.category, b.description, b.address, ...(b.services || [])]
       .join(" ")
       .toLowerCase()
@@ -141,7 +189,7 @@ export function renderOnlineBusinesses() {
 
   const businesses = state.users.filter((b) => {
     if (!b.isOnlineStore) return false;
-    const categoryOk = category === "Todos" || !category || b.category === category || (category === "Restaurantes" && b.category === "Alimentação");
+    const categoryOk = matchesBusinessCategory(b, category) || (category === "Restaurantes" && b.category === "Alimentação");
     const searchOk = !term || [b.businessName, b.name, b.category, b.description, ...(b.services || [])].join(" ").toLowerCase().includes(term);
     const filtersOk = Array.from(state.activeOnlineFilters).every(filter => Boolean(b[filter]));
     return categoryOk && searchOk && filtersOk;

@@ -39,3 +39,15 @@ button{cursor:pointer;border:0;background:none;color:inherit}
 /* Atualização: perfil público completo da empresa */
 .clickable-card{cursor:pointer;transition:transform .15s ease, box-shadow .15s ease}.clickable-card:active{transform:scale(.99)}.mini-services{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}.mini-services span{font-size:12px;font-weight:800;border-radius:999px;background:#eff6ff;color:#2563eb;padding:5px 8px}.public-actions-grid{display:grid;grid-template-columns:1fr;gap:10px;margin:14px 0}.profile-action{min-height:48px;border-radius:14px;border:1px solid var(--line);background:#fff;color:#111827;font-weight:1000;display:flex;align-items:center;justify-content:center;gap:8px;text-align:center;padding:10px}.profile-action.whatsapp{background:#22c55e;color:#fff;border-color:#22c55e}.profile-action.disabled{opacity:.55}.service-list{display:flex;flex-direction:column;gap:9px;margin-top:12px}.service-item{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.service-item span{width:24px;height:24px;border-radius:50%;background:#dcfce7;color:#16a34a;display:grid;place-items:center;font-weight:1000}.service-item strong{font-size:14px;color:#111827}.empty-services{margin-top:10px;color:var(--muted);font-weight:700;background:#fff;border:1px dashed var(--line);border-radius:14px;padding:12px}.outline-green{background:#fff}
 @media (min-width:420px){.public-actions-grid{grid-template-columns:1fr 1fr}.public-actions-grid .whatsapp{grid-column:1 / -1}}
+
+/* Editor dinâmico de serviços/setores */
+.service-builder{background:#f8fafc;border:1px solid var(--line);border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:12px}
+.service-builder-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.service-builder-head strong{display:block;font-size:14px;color:#111827}
+.service-builder-head small,.field-hint{display:block;color:var(--muted);font-size:12px;line-height:1.35;margin-top:4px}
+.small-add-btn{border:0;background:var(--blue);color:#fff;border-radius:999px;padding:10px 12px;font-weight:1000;white-space:nowrap;box-shadow:0 8px 18px rgba(37,99,235,.18)}
+.services-fields{display:flex;flex-direction:column;gap:8px}
+.service-field-row{display:flex;gap:8px;align-items:center}
+.service-field-row input{flex:1;margin:0!important}
+.remove-service-btn{width:42px;height:42px;border-radius:12px;border:1px solid var(--line);background:#fff;color:#ef4444;font-size:22px;font-weight:900;line-height:1}
+@media (max-width:420px){.service-builder-head{flex-direction:column}.small-add-btn{width:100%}}

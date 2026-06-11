@@ -232,7 +232,20 @@
           <label>Instagram<input type="text" name="instagram" placeholder="@suaempresa" /></label>
           <label>Endereço<input type="text" name="address" placeholder="Pontalina, GO" /></label>
           <label>Resumo da empresa<textarea name="description" rows="4" placeholder="Fale um pouco sobre a empresa..."></textarea></label>
-          <label>Serviços que presta<textarea name="servicesText" rows="4" placeholder="Digite um serviço por linha. Ex:\nPintura residencial\nReforma geral\nOrçamento sem compromisso"></textarea></label>
+
+          <div class="service-builder">
+            <div class="service-builder-head">
+              <div>
+                <strong>Serviços / setores da empresa</strong>
+                <small>Adicione um por vez. Ex: Padaria, Açougue, Hortifruti, Entrega, Marmitex.</small>
+              </div>
+              <button type="button" class="small-add-btn" id="addServiceBtn">+ Adicionar</button>
+            </div>
+            <div id="servicesFields" class="services-fields"></div>
+            <input type="hidden" name="servicesText" id="servicesTextHidden" />
+            <p class="field-hint">Cada item vira uma etiqueta no perfil público e também ajuda a empresa aparecer nas abas/filtros e na busca.</p>
+          </div>
+
           <label>Link da empresa / site<input type="url" name="businessLink" placeholder="https://minhaempresa.com.br ou link do Instagram" /></label>
           <label>Cardápio em PDF<input type="file" name="menuPdf" accept="application/pdf" /></label>
           <label>Logo<input type="file" name="logo" accept="image/*" /></label>

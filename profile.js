@@ -17,6 +17,7 @@ import { logout } from "./auth.js";
 
 export function initProfile() {
   setupProfileForm();
+  setupServicesBuilder();
 }
 
 export function renderProfile() {
@@ -97,6 +98,7 @@ function openEditProfile() {
     form.instagram.value = profile.instagram || "";
     form.address.value = profile.address || "Pontalina, GO";
     form.description.value = profile.description || "";
+    setServiceFields(Array.isArray(profile.services) ? profile.services : []);
     form.servicesText.value = Array.isArray(profile.services) ? profile.services.join("\n") : "";
     form.businessLink.value = profile.businessLink || "";
     form.isOnlineStore.checked = Boolean(profile.isOnlineStore);
@@ -106,6 +108,72 @@ function openEditProfile() {
   }
 
   openModal("editProfileModal");
+}
+
+
+function setupServicesBuilder() {
+  const addBtn = $("#addServiceBtn");
+  if (!addBtn) return;
+
+  addBtn.addEventListener("click", () => addServiceField(""));
+}
+
+function setServiceFields(services = []) {
+  const box = $("#servicesFields");
+  if (!box) return;
+  box.innerHTML = "";
+
+  const validServices = services.map(item => String(item || "").trim()).filter(Boolean);
+  if (!validServices.length) {
+    addServiceField("");
+    return;
+  }
+
+  validServices.forEach(service => addServiceField(service));
+  syncServicesHiddenInput();
+}
+
+function addServiceField(value = "") {
+  const box = $("#servicesFields");
+  if (!box) return;
+
+  const row = document.createElement("div");
+  row.className = "service-field-row";
+  row.innerHTML = `
+    <input type="text" class="service-field-input" value="${sanitize(value)}" placeholder="Ex: Padaria, Açougue, Pintura, Entrega" />
+    <button type="button" class="remove-service-btn" aria-label="Remover serviço">×</button>
+  `;
+
+  row.querySelector(".service-field-input").addEventListener("input", syncServicesHiddenInput);
+  row.querySelector(".remove-service-btn").addEventListener("click", () => {
+    row.remove();
+    if (!box.querySelector(".service-field-row")) addServiceField("");
+    syncServicesHiddenInput();
+  });
+
+  box.appendChild(row);
+  syncServicesHiddenInput();
+}
+
+function getServiceFieldsValues() {
+  const fields = Array.from(document.querySelectorAll("#servicesFields .service-field-input"));
+  const seen = new Set();
+
+  return fields
+    .map(field => field.value.trim())
+    .filter(Boolean)
+    .filter(service => {
+      const key = service.toLowerCase();
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
+}
+
+function syncServicesHiddenInput() {
+  const hidden = $("#servicesTextHidden");
+  if (!hidden) return;
+  hidden.value = getServiceFieldsValues().join("\n");
 }
 
 function setupProfileForm() {
@@ -119,6 +187,7 @@ function setupProfileForm() {
 
     feedback.textContent = "";
     feedback.classList.remove("ok");
+    syncServicesHiddenInput();
     const data = new FormData(form);
     const profile = state.currentProfile;
 
