@@ -16,6 +16,8 @@ import { promptInstall } from "./pwa.js";
 import { $, sanitize, initials, fileExt, showToast, openModal, closeModal } from "./utils.js";
 import { logout } from "./auth.js";
 
+let editingBusinessMode = false;
+
 export function initProfile() {
   setupProfileForm();
   setupServicesBuilder();
@@ -46,8 +48,8 @@ export function renderProfile() {
     return;
   }
 
-  const name = profile.businessName || profile.name || "Usuário";
-  const avatarUrl = profile.logoURL || profile.photoURL;
+  const name = profile.name || "Usuário";
+  const avatarUrl = profile.photoURL || profile.logoURL;
   const avatarHtml = avatarUrl
     ? `<img class="avatar" src="${sanitize(avatarUrl)}" alt="Foto de ${sanitize(name)}">`
     : `<div class="avatar">${sanitize(initials(name))}</div>`;
@@ -56,18 +58,20 @@ export function renderProfile() {
     ${avatarHtml}
     <div>
       <h2>${sanitize(name)}</h2>
-      <p>@${sanitize(profile.username || "usuario")} • ${profile.accountType === "empresa" ? "Empresa" : "Pessoa física"}</p>
+      <p>@${sanitize(profile.username || "usuario")} • Pessoa física${profile.hasBusiness || profile.accountType === "empresa" ? " + empresa" : ""}</p>
+      ${profile.hasBusiness || profile.accountType === "empresa" ? `<small class="business-mini-line">${sanitize(profile.businessName || "Empresa cadastrada")}</small>` : ""}
     </div>
   `;
 
+  const hasBusiness = Boolean(profile.hasBusiness || profile.accountType === "empresa");
+
   actions.innerHTML = `
-    ${profile.accountType === "empresa" ? `
-      <button class="action-card business-highlight" id="myBusinessBtn">
-        <div><strong>Minha Empresa</strong><p>Atualize WhatsApp, categoria, logo, banner e dados públicos.</p></div>
-        <span>→</span>
-      </button>` : ``}
     <button class="action-card" id="editProfileBtn">
-      <div><strong>Editar perfil</strong><p>Atualize nome, foto e informações.</p></div>
+      <div><strong>Meu perfil</strong><p>Atualize nome, @usuário e foto pessoal.</p></div>
+      <span>→</span>
+    </button>
+    <button class="action-card business-highlight" id="myBusinessBtn">
+      <div><strong>${hasBusiness ? "Minha Empresa" : "+ Cadastrar minha empresa"}</strong><p>${hasBusiness ? "Atualize WhatsApp, categoria, logo, banner e dados públicos." : "Use o mesmo login para aparecer no Guia Comercial."}</p></div>
       <span>→</span>
     </button>
     <button class="action-card" id="installHelpBtn">
@@ -77,24 +81,28 @@ export function renderProfile() {
     <button class="danger-btn" id="logoutBtn">Sair da conta</button>
   `;
 
-  $("#editProfileBtn")?.addEventListener("click", openEditProfile);
-  $("#myBusinessBtn")?.addEventListener("click", openEditProfile);
+  $("#editProfileBtn")?.addEventListener("click", () => openEditProfile(false));
+  $("#myBusinessBtn")?.addEventListener("click", () => openEditProfile(true));
   $("#logoutBtn")?.addEventListener("click", logout);
   $("#installHelpBtn")?.addEventListener("click", promptInstall);
 }
 
-function openEditProfile() {
+function openEditProfile(editBusiness = false) {
   const profile = state.currentProfile;
   if (!profile) return;
-  const form = $("#profileForm");
-  form.name.value = profile.name || profile.businessName || "";
-  form.username.value = profile.username || "";
-  const businessFields = $("#businessProfileFields");
-  businessFields.classList.toggle("hidden", profile.accountType !== "empresa");
 
-  if (profile.accountType === "empresa") {
-    form.businessName.value = profile.businessName || profile.name || "";
-    form.category.value = profile.category || "";
+  editingBusinessMode = Boolean(editBusiness);
+
+  const form = $("#profileForm");
+  form.name.value = profile.name || "";
+  form.username.value = profile.username || "";
+
+  const businessFields = $("#businessProfileFields");
+  businessFields.classList.toggle("hidden", !editingBusinessMode);
+
+  if (editingBusinessMode) {
+    form.businessName.value = profile.businessName || "";
+    form.category.value = profile.category || "Serviços";
     form.whatsapp.value = profile.whatsapp || "";
     form.instagram.value = profile.instagram || "";
     form.address.value = profile.address || "Pontalina, GO";
@@ -106,10 +114,22 @@ function openEditProfile() {
     form.isOpen.checked = profile.isOpen !== false;
     form.freeDelivery.checked = Boolean(profile.freeDelivery);
     form.hasPromotion.checked = Boolean(profile.hasPromotion);
-    setBusinessHoursFields(profile.businessHours || {});
+    setBusinessHoursFields(profile.businessHours || defaultBusinessHours());
   }
 
   openModal("editProfileModal");
+}
+
+function defaultBusinessHours() {
+  return {
+    mon: { open: "08:00", close: "18:00", closed: false },
+    tue: { open: "08:00", close: "18:00", closed: false },
+    wed: { open: "08:00", close: "18:00", closed: false },
+    thu: { open: "08:00", close: "18:00", closed: false },
+    fri: { open: "08:00", close: "18:00", closed: false },
+    sat: { open: "08:00", close: "12:00", closed: false },
+    sun: { open: "", close: "", closed: true }
+  };
 }
 
 
@@ -231,8 +251,10 @@ function setupProfileForm() {
         update.photoURL = await uploadUserFile(photo, `users/${state.currentUser.uid}/profile/profile.${fileExt(photo)}`);
       }
 
-      if (profile.accountType === "empresa") {
+      if (editingBusinessMode) {
         Object.assign(update, {
+          accountType: "empresa",
+          hasBusiness: true,
           businessName: String(data.get("businessName") || data.get("name") || "").trim(),
           category: String(data.get("category") || "Serviços").trim(),
           whatsapp: String(data.get("whatsapp") || "").trim(),
@@ -272,6 +294,7 @@ function setupProfileForm() {
       closeModal("editProfileModal");
       showToast("Perfil atualizado!");
       renderProfile();
+      editingBusinessMode = false;
       form.reset();
     } catch (error) {
       console.error(error);

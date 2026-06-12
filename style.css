@@ -458,3 +458,37 @@ body.app-unlocked #authModal.hidden{
   .primary-btn{height:46px;font-size:13.5px;border-radius:13px}
   .secondary-btn,.danger-btn{height:42px;font-size:13px;border-radius:12px}
 }
+
+/* Ajustes de login: recuperar senha, confirmar senha e visualizar senha */
+.password-wrap{
+  position:relative;
+  display:flex;
+  align-items:center;
+  width:100%;
+}
+.password-wrap input{
+  padding-right:48px!important;
+}
+.toggle-password{
+  position:absolute;
+  right:8px;
+  top:50%;
+  transform:translateY(-50%);
+  width:36px;
+  height:36px;
+  border-radius:12px;
+  background:#f3f4f6;
+  font-size:15px;
+}
+.forgot-password-btn{
+  align-self:center;
+  margin-top:-2px;
+  font-weight:900;
+}
+.business-mini-line{
+  display:block;
+  color:#2563eb;
+  font-size:12px;
+  font-weight:900;
+  margin-top:2px;
+}

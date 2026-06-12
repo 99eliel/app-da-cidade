@@ -6,6 +6,7 @@ import {
   onAuthStateChanged,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
+  sendPasswordResetEmail,
   signOut,
   updateProfile,
   doc,
@@ -15,7 +16,7 @@ import {
 } from "./firebase.js";
 
 import { state } from "./state.js";
-import { $, normalizeUsername, showToast, closeModal } from "./utils.js";
+import { $, normalizeUsername, showToast } from "./utils.js";
 import { renderProfile } from "./profile.js";
 import { renderPosts } from "./posts.js";
 import { renderBusinesses, renderOnlineBusinesses } from "./businesses.js";
@@ -24,7 +25,7 @@ function lockAppForLogin() {
   document.body.classList.remove("app-unlocked");
   document.body.classList.add("auth-locked");
   document.body.classList.add("auth-required");
-  lockAppForLogin();
+  document.getElementById("authModal")?.classList.remove("hidden");
 }
 
 function unlockAppAfterLogin() {
@@ -63,9 +64,9 @@ export function initAuth() {
 function setupAuthForms() {
   const loginForm = $("#loginForm");
   const registerForm = $("#registerForm");
-  const accountType = $("#registerAccountType");
-  const extra = $("#registerBusinessFields");
   const feedback = $("#authFeedback");
+
+  setupPasswordToggles();
 
   document.querySelectorAll("[data-auth-mode]").forEach((btn) => {
     btn.addEventListener("click", () => {
@@ -78,13 +79,28 @@ function setupAuthForms() {
     });
   });
 
-  accountType?.addEventListener("change", () => {
-    extra.classList.toggle("hidden", accountType.value !== "empresa");
+  $("#forgotPasswordBtn")?.addEventListener("click", async () => {
+    feedback.textContent = "";
+    feedback.classList.remove("ok");
+    const currentEmail = loginForm?.email?.value?.trim() || "";
+    const email = currentEmail || prompt("Digite o e-mail cadastrado para recuperar a senha:");
+
+    if (!email) return;
+
+    try {
+      await sendPasswordResetEmail(auth, email.trim());
+      feedback.textContent = "Enviamos um link de recuperação para seu e-mail.";
+      feedback.classList.add("ok");
+      showToast("Link de recuperação enviado!");
+    } catch (error) {
+      feedback.textContent = getAuthError(error);
+    }
   });
 
   loginForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     feedback.textContent = "";
+    feedback.classList.remove("ok");
     const data = new FormData(loginForm);
     try {
       await signInWithEmailAndPassword(auth, data.get("email"), data.get("password"));
@@ -98,23 +114,36 @@ function setupAuthForms() {
   registerForm?.addEventListener("submit", async (event) => {
     event.preventDefault();
     feedback.textContent = "";
+    feedback.classList.remove("ok");
     const data = new FormData(registerForm);
-    const type = data.get("accountType");
     const name = String(data.get("name") || "").trim();
     const username = normalizeUsername(data.get("username"));
+    const password = String(data.get("password") || "");
+    const confirmPassword = String(data.get("confirmPassword") || "");
 
     if (!username) {
       feedback.textContent = "Digite um @usuário válido.";
       return;
     }
 
+    if (password.length < 6) {
+      feedback.textContent = "A senha precisa ter pelo menos 6 caracteres.";
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      feedback.textContent = "As senhas não conferem.";
+      return;
+    }
+
     try {
-      const credential = await createUserWithEmailAndPassword(auth, data.get("email"), data.get("password"));
+      const credential = await createUserWithEmailAndPassword(auth, data.get("email"), password);
       await updateProfile(credential.user, { displayName: name });
 
-      const baseProfile = {
+      const profile = {
         uid: credential.user.uid,
-        accountType: type,
+        accountType: "fisica",
+        hasBusiness: false,
         name,
         username,
         email: data.get("email"),
@@ -125,41 +154,25 @@ function setupAuthForms() {
         updatedAt: serverTimestamp()
       };
 
-      const businessProfile = type === "empresa" ? {
-        businessName: name,
-        category: data.get("category") || "Serviços",
-        whatsapp: data.get("whatsapp") || "",
-        instagram: "",
-        businessLink: data.get("businessLink") || "",
-        menuPdfURL: "",
-        services: [],
-        address: "Pontalina, GO",
-        description: "",
-        logoURL: "",
-        bannerURL: "",
-        isOnlineStore: ["Alimentação", "Lanches", "Restaurantes", "Açaí", "Mercado", "Padaria", "Açougue", "Hortifruti", "Bebidas", "Farmácia"].includes(data.get("category")),
-        isOpen: true,
-        hasPromotion: false,
-        freeDelivery: false,
-        deliveryTags: [],
-        businessHours: {
-          mon: { open: "08:00", close: "18:00", closed: false },
-          tue: { open: "08:00", close: "18:00", closed: false },
-          wed: { open: "08:00", close: "18:00", closed: false },
-          thu: { open: "08:00", close: "18:00", closed: false },
-          fri: { open: "08:00", close: "18:00", closed: false },
-          sat: { open: "08:00", close: "12:00", closed: false },
-          sun: { open: "", close: "", closed: true }
-        }
-      } : {};
-
-      await setDoc(doc(db, "users", credential.user.uid), { ...baseProfile, ...businessProfile });
+      await setDoc(doc(db, "users", credential.user.uid), profile);
       showToast("Conta criada com sucesso!");
       registerForm.reset();
-      extra.classList.add("hidden");
     } catch (error) {
       feedback.textContent = getAuthError(error);
     }
+  });
+}
+
+function setupPasswordToggles() {
+  document.querySelectorAll(".toggle-password").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const input = btn.parentElement?.querySelector("input");
+      if (!input) return;
+      const showing = input.type === "text";
+      input.type = showing ? "password" : "text";
+      btn.textContent = showing ? "👁️" : "🙈";
+      btn.setAttribute("aria-label", showing ? "Mostrar senha" : "Ocultar senha");
+    });
   });
 }
 
@@ -183,6 +196,7 @@ function getAuthError(error) {
   if (code.includes("invalid-email")) return "Email inválido.";
   if (code.includes("weak-password")) return "A senha precisa ter pelo menos 6 caracteres.";
   if (code.includes("invalid-credential") || code.includes("wrong-password") || code.includes("user-not-found")) return "Email ou senha incorretos.";
+  if (code.includes("missing-email")) return "Digite o e-mail para recuperar a senha.";
   if (code.includes("network-request-failed")) return "Falha de conexão. Verifique sua internet.";
   return "Não foi possível concluir. Verifique os dados e tente novamente.";
 }

@@ -1,4 +1,4 @@
-const CACHE_NAME = "guia-cidade-v8-login-install";
+const CACHE_NAME = "guia-cidade-v9-login-senha-pj";
 const ASSETS = [
   "./",
   "./index.html",
