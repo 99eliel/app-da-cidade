@@ -96,3 +96,7 @@ Esta versão adiciona:
 - Perfil público da empresa ao clicar nos cards.
 - Botões de WhatsApp corrigidos.
 - Interface mobile ajustada para ficar mais próxima dos prints de referência.
+
+## Atualização automática do PWA
+
+Esta versão verifica atualizações automaticamente quando o app abre, quando volta para primeiro plano e a cada 60 segundos. Ao publicar novos arquivos no GitHub Pages, o app instalado deve detectar a nova versão e recarregar sozinho, sem precisar apagar e instalar novamente.

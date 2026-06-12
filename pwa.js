@@ -19,11 +19,56 @@ function updateInstallButtons() {
   });
 }
 
+function monitorServiceWorkerUpdate(registration) {
+  let refreshing = false;
+
+  navigator.serviceWorker.addEventListener("controllerchange", () => {
+    if (refreshing) return;
+    refreshing = true;
+    showToast("Atualizando o app...");
+    window.location.reload();
+  });
+
+  function activateWaitingWorker() {
+    if (registration.waiting) {
+      registration.waiting.postMessage({ type: "SKIP_WAITING" });
+    }
+  }
+
+  registration.addEventListener("updatefound", () => {
+    const newWorker = registration.installing;
+    if (!newWorker) return;
+
+    newWorker.addEventListener("statechange", () => {
+      if (newWorker.state === "installed" && navigator.serviceWorker.controller) {
+        showToast("Nova versão encontrada. Atualizando...");
+        activateWaitingWorker();
+      }
+    });
+  });
+
+  activateWaitingWorker();
+
+  // Procura atualização ao abrir o app e de tempos em tempos.
+  registration.update().catch(() => null);
+  setInterval(() => registration.update().catch(() => null), 60 * 1000);
+
+  document.addEventListener("visibilitychange", () => {
+    if (!document.hidden) {
+      registration.update().catch(() => null);
+    }
+  });
+}
+
 export function initPWA() {
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("./service-worker.js").catch((error) => {
-      console.warn("Service Worker não registrado", error);
-    });
+    navigator.serviceWorker.register("./service-worker.js", { updateViaCache: "none" })
+      .then((registration) => {
+        monitorServiceWorkerUpdate(registration);
+      })
+      .catch((error) => {
+        console.warn("Service Worker não registrado", error);
+      });
   }
 
   updateInstallButtons();
