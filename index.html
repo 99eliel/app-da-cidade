@@ -165,6 +165,16 @@
         <button class="link-button forgot-password-btn" id="forgotPasswordBtn" type="button">Esqueci minha senha</button>
       </form>
 
+      <form id="resetPasswordForm" class="form-stack reset-password-box hidden">
+        <div class="reset-password-head">
+          <strong>Recuperar senha</strong>
+          <span>Informe seu e-mail cadastrado para receber o link de redefinição.</span>
+        </div>
+        <label>Email cadastrado<input type="email" name="resetEmail" required placeholder="seuemail@exemplo.com" /></label>
+        <button class="primary-btn" type="submit">Enviar link de recuperação</button>
+        <button class="link-button" id="cancelResetPasswordBtn" type="button">Voltar para login</button>
+      </form>
+
       <form id="registerForm" class="form-stack hidden">
         <label>Nome completo<input type="text" name="name" required placeholder="Ex: João Silva" /></label>
         <label>@usuário<input type="text" name="username" required placeholder="ex: joaosilva" /></label>

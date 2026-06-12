@@ -64,6 +64,7 @@ export function initAuth() {
 function setupAuthForms() {
   const loginForm = $("#loginForm");
   const registerForm = $("#registerForm");
+  const resetPasswordForm = $("#resetPasswordForm");
   const feedback = $("#authFeedback");
 
   setupPasswordToggles();
@@ -75,23 +76,55 @@ function setupAuthForms() {
       const mode = btn.dataset.authMode;
       loginForm.classList.toggle("hidden", mode !== "login");
       registerForm.classList.toggle("hidden", mode !== "register");
+      resetPasswordForm?.classList.add("hidden");
       feedback.textContent = "";
+      feedback.classList.remove("ok");
     });
   });
 
-  $("#forgotPasswordBtn")?.addEventListener("click", async () => {
+  $("#forgotPasswordBtn")?.addEventListener("click", () => {
     feedback.textContent = "";
     feedback.classList.remove("ok");
     const currentEmail = loginForm?.email?.value?.trim() || "";
-    const email = currentEmail || prompt("Digite o e-mail cadastrado para recuperar a senha:");
+    if (resetPasswordForm?.resetEmail && currentEmail) {
+      resetPasswordForm.resetEmail.value = currentEmail;
+    }
+    loginForm?.classList.add("hidden");
+    registerForm?.classList.add("hidden");
+    resetPasswordForm?.classList.remove("hidden");
+  });
 
-    if (!email) return;
+  $("#cancelResetPasswordBtn")?.addEventListener("click", () => {
+    feedback.textContent = "";
+    feedback.classList.remove("ok");
+    resetPasswordForm?.classList.add("hidden");
+    loginForm?.classList.remove("hidden");
+    document.querySelectorAll("[data-auth-mode]").forEach(b => b.classList.remove("active"));
+    document.querySelector('[data-auth-mode="login"]')?.classList.add("active");
+  });
+
+  resetPasswordForm?.addEventListener("submit", async (event) => {
+    event.preventDefault();
+    feedback.textContent = "";
+    feedback.classList.remove("ok");
+
+    const data = new FormData(resetPasswordForm);
+    const email = String(data.get("resetEmail") || "").trim();
+
+    if (!email) {
+      feedback.textContent = "Digite o e-mail cadastrado.";
+      return;
+    }
 
     try {
-      await sendPasswordResetEmail(auth, email.trim());
+      await sendPasswordResetEmail(auth, email);
       feedback.textContent = "Enviamos um link de recuperação para seu e-mail.";
       feedback.classList.add("ok");
       showToast("Link de recuperação enviado!");
+      resetPasswordForm.reset();
+      resetPasswordForm.classList.add("hidden");
+      loginForm?.classList.remove("hidden");
+      if (loginForm?.email) loginForm.email.value = email;
     } catch (error) {
       feedback.textContent = getAuthError(error);
     }

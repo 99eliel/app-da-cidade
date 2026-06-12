@@ -492,3 +492,29 @@ body.app-unlocked #authModal.hidden{
   font-weight:900;
   margin-top:2px;
 }
+
+
+/* Recuperação de senha com campo de e-mail */
+.reset-password-box{
+  background:#f8fafc;
+  border:1px solid #e5e7eb;
+  border-radius:18px;
+  padding:14px;
+  margin-top:4px;
+}
+.reset-password-head{
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+  margin-bottom:2px;
+}
+.reset-password-head strong{
+  color:#111827;
+  font-size:15px;
+  font-weight:1000;
+}
+.reset-password-head span{
+  color:#6b7280;
+  font-size:12px;
+  line-height:1.35;
+}

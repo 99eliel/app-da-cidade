@@ -1,4 +1,4 @@
-const CACHE_NAME = "guia-cidade-v9-login-senha-pj";
+const CACHE_NAME = "guia-cidade-v10-recuperar-senha-email";
 const ASSETS = [
   "./",
   "./index.html",
